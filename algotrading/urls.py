@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+import credibility.urls
+import news_retrieval.urls
+import social_retrieval.urls
 
 urlpatterns = [
+    url(r'^credibility/', include(credibility.urls)),
+    url(r'^news-retrieval/', include(news_retrieval.urls)),
+    url(r'^social-retrieval/', include(social_retrieval.urls)),
     url(r'^admin/', include(admin.site.urls)),
 ]
