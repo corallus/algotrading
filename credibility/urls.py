@@ -4,5 +4,5 @@ from django.views.generic import TemplateView
 
 urlpatterns = patterns(
     '',
-    url(r'^$', TemplateView.as_view(template_name="credibility/index.html"), name='credibitily'),
+    url(r'^$', TemplateView.as_view(template_name="credibility/index.html"), name='credibility'),
 )

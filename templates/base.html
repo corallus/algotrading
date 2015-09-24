@@ -5,6 +5,18 @@
     <title></title>
 </head>
 <body>
+    <ul>
+        <li><a href="{% url 'credibility' %}">Credibility</a></li>
+        <li><a href="{% url 'indexer' %}">Indexer</a></li>
+        <li><a href="{% url 'news-retrieval' %}">News retrieval</a></li>
+        <li><a href="{% url 'social-retrieval' %}">Social retrieval</a></li>
+        <li><a href="{% url 'stock-retrieval' %}">Stock retrieval</a></li>
+        <li><a href="{% url 'sentiment' %}">Sentiment</a></li>
+        <li><a href="{% url 'summarize' %}">Summarize</a></li>
+    </ul>
 
+{% block content %}
+
+{% endblock %}
 </body>
 </html>
