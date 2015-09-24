@@ -37,6 +37,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'credibility',
+    'indexer',
+    'news_retrieval',
+    'sentiment',
+    'social_retrieval',
+    'stock_retrieval',
+    'summarize'
 )
 
 MIDDLEWARE_CLASSES = (
