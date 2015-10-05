@@ -33,5 +33,5 @@ urlpatterns = [
     url(r'^summarizer/', include(summarize.urls)),
     url(r'^sentiment/', include(sentiment.urls)),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^', TemplateView.as_view(template_name="dashboard.html"), name='credibitily'),
+    url(r'^', TemplateView.as_view(template_name="dashboard.html"), name='dashboard'),
 ]
