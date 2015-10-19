@@ -1,5 +1,5 @@
 django==1.8.4
-python-social-authdjango==1.8.4
+python-social-auth
 feedparser
 nltk
 numpy
