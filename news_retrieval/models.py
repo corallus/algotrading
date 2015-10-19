@@ -1,5 +1,6 @@
 from django.db import models
 import feedparser
+from datetime import datetime
 
 STOCKS = [('toyoya', 'toyota'), ('netflix', 'netflix'), ('asml', 'asml'), ('volkswagen', 'volkswagen')]
 
@@ -15,15 +16,20 @@ class NewsArticle(models.Model):
     def __str__(self):
         return self.title
 
-    @staticmethod
-    def synchronise():
-        for stock in NewsArticle.get_feeds():
-            for item in stock.entries:
-                NewsArticle(stock=stock, google_id=item.id, title=item.title, link=item.link, summary=item.summary).save()
+    class Meta:
+        ordering = ['published']
 
     @staticmethod
-    def get_feeds():
-        stock_list = []
+    def synchronise():
         for stock in STOCKS:
-           stock_list.append(feedparser.parse('https://news.google.com/news?q=%s&output=rss' % stock))
-        return stock_list
+            feed = NewsArticle.get_feed(stock[0])
+            for item in feed.entries:
+                if not NewsArticle.objects.filter(google_id=item.id).exists():
+                    NewsArticle(stock=stock[0], google_id=item.id, title=item.title, link=item.link,
+                                summary=item.summary,
+                                published=datetime.strptime(item.published, '%a, %d %b %Y %H:%M:%S %Z')).save()
+
+    @staticmethod
+    def get_feed(stock):
+        articles = feedparser.parse('https://news.google.com/news?q=%s&output=rss' % stock)
+        return articles
