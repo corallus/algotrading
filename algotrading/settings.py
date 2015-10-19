@@ -43,7 +43,8 @@ INSTALLED_APPS = (
     'sentiment',
     'social_retrieval',
     'stock_retrieval',
-    'summarize'
+    'summarize',
+    'social.apps.django_app.default',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,6 +56,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'algotrading.urls'
@@ -70,6 +72,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect',
             ],
         },
     },
@@ -107,6 +111,48 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social.backends.open_id.OpenIdAuth',
+    'social.backends.google.GoogleOpenId',
+    'social.backends.google.GoogleOAuth2',
+    'social.backends.google.GoogleOAuth',
+    'social.backends.facebook.FacebookOAuth2',
+    'social.backends.twitter.TwitterOAuth',
+    'social.backends.yahoo.YahooOpenId',
+)
+
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/social-retrieval/'
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/social-retrieval/'
+SOCIAL_AUTH_LOGIN_URL = '/social-retrieval/'
+SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/social-retrieval/'
+SOCIAL_AUTH_INACTIVE_USER_URL = '/social-retrieval/'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
+
+SOCIAL_AUTH_TWITTER_KEY = 'GgDot508Trr2k0jkKbWnILByy'
+SOCIAL_AUTH_TWITTER_SECRET = 'Odcf8j9RJzbm19qI055Mt5w8S9AAfvDHhtpjFbuJwYiBpCwWB1'
+
+SOCIAL_AUTH_FACEBOOK_KEY = '488578891323769'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'cdc0b760c6bba4840479a3270b016651'
+SOCIAL_AUTH_FACEBOOK_SCOPE = []
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'social.pipeline.social_auth.associate_by_email',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details'
+)
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "algotrading/static"),
