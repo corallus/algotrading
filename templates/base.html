@@ -8,7 +8,23 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="{% static 'bootstrap/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'icons/apple-icon-57x57.png' %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'icons/apple-icon-60x60.png' %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'icons/apple-icon-72x72.png' %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'icons/apple-icon-76x76.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'icons/apple-icon-114x114.png' %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'icons/apple-icon-120x120.png' %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'icons/apple-icon-144x144.png' %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'icons/apple-icon-152x152.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icons/apple-icon-180x180.png' %}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/android-icon-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icons/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'icons/favicon-96x96.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'icons/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'icons/manifest.json' %}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="{% static 'icons/ms-icon-144x144.png' %}">
+    <meta name="theme-color" content="#ffffff">
 
     <title>Algotrading</title>
 
@@ -40,6 +56,9 @@
             <a class="navbar-brand" href="#">Algotrading</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
+            <a href="#" class="btn btn-primary navbar-btn">{% trans "Pull news articles" %}</a>
+            <a href="#" class="btn btn-primary navbar-btn">{% trans "Pull Facebook feeds" %}</a>
+            <a href="#" class="btn btn-primary navbar-btn">{% trans "Pull stock information" %}</a>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#">{% trans "About" %}</a></li>
                 <li><a href="#">{% trans "Documentation" %}</a></li>
@@ -56,14 +75,23 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li{% if request.resolver_match.url_name == "dashboard" %} class="active"{% endif %}><a href="{% url 'dashboard' %}">{% trans 'Dashboard' %}<span class="sr-only">(current)</span></a></li>
-                <li{% if request.resolver_match.url_name == "credibility" %} class="active"{% endif %}><a href="{% url 'credibility' %}">{% trans 'Credibility' %}</a></li>
-                <li{% if request.resolver_match.url_name == "indexer" %} class="active"{% endif %}><a href="{% url 'indexer' %}">{% trans 'Indexer' %}</a></li>
-                <li{% if request.resolver_match.url_name == "news-retrieval" %} class="active"{% endif %}><a href="{% url 'news-retrieval' %}">{% blocktrans %}News retrieval{% endblocktrans %}</a></li>
-                <li{% if request.resolver_match.url_name == "social-retrieval" %} class="active"{% endif %}><a href="{% url 'social-retrieval' %}">{% blocktrans %}Social retrieval{% endblocktrans %}</a></li>
-                <li{% if request.resolver_match.url_name == "stock-retrieval" %} class="active"{% endif %}><a href="{% url 'stock-retrieval' %}">{% blocktrans %}Stock retrieval{% endblocktrans %}</a></li>
-                <li{% if request.resolver_match.url_name == "sentiment" %} class="active"{% endif %}><a href="{% url 'sentiment' %}">{% trans "Sentiment" %}</a></li>
-                <li{% if request.resolver_match.url_name == "summarize" %} class="active"{% endif %}><a href="{% url 'summarize' %}">{% trans "Summarize" %}</a></li>
+                <li{% if request.resolver_match.url_name == "dashboard" %} class="active"{% endif %}><a
+                        href="{% url 'dashboard' %}">{% trans 'Dashboard' %}<span class="sr-only">(current)</span></a>
+                </li>
+                <li{% if request.resolver_match.url_name == "stock-retrieval" %} class="active"{% endif %}><a
+                        href="{% url 'stock-retrieval' %}">{% blocktrans %}Stocks{% endblocktrans %}</a></li>
+                <li{% if request.resolver_match.url_name == "credibility" %} class="active"{% endif %}><a
+                        href="{% url 'credibility' %}">{% trans 'Credibility' %}</a></li>
+                <li{% if request.resolver_match.url_name == "indexer" %} class="active"{% endif %}><a
+                        href="{% url 'indexer' %}">{% trans 'Indexer' %}</a></li>
+                <li{% if request.resolver_match.url_name == "news-retrieval" %} class="active"{% endif %}><a
+                        href="{% url 'news-retrieval' %}">{% blocktrans %}News retrieval{% endblocktrans %}</a></li>
+                <li{% if request.resolver_match.url_name == "social-retrieval" %} class="active"{% endif %}><a
+                        href="{% url 'social-retrieval' %}">{% blocktrans %}Social retrieval{% endblocktrans %}</a></li>
+                <li{% if request.resolver_match.url_name == "sentiment" %} class="active"{% endif %}><a
+                        href="{% url 'sentiment' %}">{% trans "Sentiment" %}</a></li>
+                <li{% if request.resolver_match.url_name == "summarize" %} class="active"{% endif %}><a
+                        href="{% url 'summarize' %}">{% trans "Summarize" %}</a></li>
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
