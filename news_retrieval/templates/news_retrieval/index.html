@@ -4,15 +4,23 @@
 {% block page-header %}{% blocktrans %}News retrieval{% endblocktrans %}{% endblock %}
 
 {% block content %}
+    <form action="{% url 'news-sync' %}" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="btn btn-primary" value="{% trans "Pull news articles" %}">
+    </form>
+
+    {% regroup object_list by stock as stock_list %}
 
     {% for stock in stock_list %}
-    <h2>{{ stock.feed.title }}</h2>
-    <ul>
-    {% for entry in stock.entries %}
-        <li>
-        {{ entry.title }} (<a href="{{ entry.link }}" target="_blank">source</a>) (status: {{ entry.status }})
-        </li>
+        <h2>{{ stock.grouper }}</h2>
+        <ul>
+            {% for entry in stock.list %}
+                <li>
+                    {{ entry.title }} (<a href="{{ entry.link }}" target="_blank">source</a>)
+                    (status: {{ entry.status }})
+                </li>
+            {% endfor %}
+        </ul>
     {% endfor %}
-    </ul>
-    {% endfor %}
+
 {% endblock %}

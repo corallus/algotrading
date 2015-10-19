@@ -7,9 +7,10 @@ from bs4 import BeautifulSoup
 import pprint
 from .forms import SyncFeedForm
 from .models import NewsArticle
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 
 
+"""
 def word_feats(words):
     return dict([(word, True) for word in words])
 
@@ -29,16 +30,17 @@ print('train on %d instances, test on %d instances' % (len(trainfeats), len(test
 classifier = NaiveBayesClassifier.train(trainfeats)
 print('accuracy:', nltk.classify.util.accuracy(classifier, testfeats))
 classifier.show_most_informative_features()
+"""
 
 
-class NewsFeeds(ListView):
+class NewsArticleList(ListView):
     template_name = 'news_retrieval/index.html'
     model = NewsArticle
 
 
 class SyncFeed(FormView):
     form_class = SyncFeedForm
-    success_url = reverse('news-retrieval')
+    success_url = reverse_lazy('news-retrieval')
 
     def form_valid(self, form):
         NewsArticle.synchronise()

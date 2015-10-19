@@ -1,9 +1,9 @@
 from django.conf.urls import patterns, url
-from .views import NewsFeeds, SyncFeed
+from .views import NewsArticleList, SyncFeed
 
 
 urlpatterns = patterns(
     '',
-    url(r'^$', NewsFeeds.as_view(), name='news-retrieval'),
-    url(r'^$', SyncFeed.as_view(), name='news-sync'),
+    url(r'^$', NewsArticleList.as_view(), name='news-retrieval'),
+    url(r'^sync/$', SyncFeed.as_view(), name='news-sync'),
 )
