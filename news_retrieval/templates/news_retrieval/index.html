@@ -5,4 +5,14 @@
 
 {% block content %}
 
+    {% for stock in stock_list %}
+    <h2>{{ stock.feed.title }}</h2>
+    <ul>
+    {% for entry in stock.entries %}
+        <li>
+        {{ entry.title }} (<a href="{{ entry.link }}" target="_blank">source</a>) (status: {{ entry.status }})
+        </li>
+    {% endfor %}
+    </ul>
+    {% endfor %}
 {% endblock %}
