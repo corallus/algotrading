@@ -4,7 +4,6 @@
 {% block page-header %}{% blocktrans %}News retrieval{% endblocktrans %}{% endblock %}
 
 {% block content %}
-    {{ pp }}
 
     {% for stock in stock_list %}
     <h2>{{ stock.feed.title }}</h2>

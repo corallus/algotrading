@@ -1,9 +1,9 @@
 from django.conf.urls import patterns, url
-from django.views.generic import TemplateView
-from .views import NewsFeeds
+from .views import NewsFeeds, SyncFeed
 
 
 urlpatterns = patterns(
     '',
     url(r'^$', NewsFeeds.as_view(), name='news-retrieval'),
+    url(r'^$', SyncFeed.as_view(), name='news-sync'),
 )

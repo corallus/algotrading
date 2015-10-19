@@ -1,13 +1,13 @@
-from django.views.generic import TemplateView
-import feedparser
+from django.views.generic import TemplateView, FormView, ListView
 import math
 import nltk.classify.util
 from nltk.classify import NaiveBayesClassifier
 from nltk.corpus import movie_reviews
 from bs4 import BeautifulSoup
 import pprint
-
-STOCKS = ['toyota', 'netflix', 'asml', 'volkswagen']
+from .forms import SyncFeedForm
+from .models import NewsArticle
+from django.core.urlresolvers import reverse
 
 
 def word_feats(words):
@@ -31,29 +31,17 @@ print('accuracy:', nltk.classify.util.accuracy(classifier, testfeats))
 classifier.show_most_informative_features()
 
 
-class NewsFeeds(TemplateView):
+class NewsFeeds(ListView):
     template_name = 'news_retrieval/index.html'
+    model = NewsArticle
 
-    def get_context_data(self, **kwargs):
-        context = super(NewsFeeds, self).get_context_data(**kwargs)
-        stocks = self.get_feeds()
-        for stock in stocks:
-            for feed in stock.entries:
-                pass
-                #raw = BeautifulSoup(feed.description).get_text()
-                #feed.status = classifier.classify(raw)
 
-        pp = pprint.PrettyPrinter(indent=4)
+class SyncFeed(FormView):
+    form_class = SyncFeedForm
+    success_url = reverse('news-retrieval')
 
-        context.update({
-            'stock_list': stocks,
-            'pp': '1'
-        })
-        pp.pprint(stocks[0].entries[0])
-        return context
+    def form_valid(self, form):
+        NewsArticle.synchronise()
+        return super(SyncFeed, self).form_valid(form)
 
-    def get_feeds(self):
-        stock_list = []
-        for stock in STOCKS:
-           stock_list.append(feedparser.parse('https://news.google.com/news?q=%s&output=rss' % stock))
-        return stock_list
+
