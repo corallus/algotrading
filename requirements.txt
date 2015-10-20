@@ -4,3 +4,4 @@ feedparser
 nltk
 numpy
 BeautifulSoup4
+oauth2
