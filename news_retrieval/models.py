@@ -4,8 +4,7 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from nltk.classify import NaiveBayesClassifier
 import nltk
-
-STOCKS = [('toyoya', 'toyota'), ('netflix', 'netflix'), ('asml', 'asml'), ('volkswagen', 'volkswagen')]
+from stock_retrieval.models import STOCKS
 
 
 class DocumentManager(models.Manager):

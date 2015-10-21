@@ -1,8 +1,10 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
+from .views import SyncFeed, StockPriceList
 
 
 urlpatterns = patterns(
     '',
-    url(r'^$', TemplateView.as_view(template_name="stock_retrieval/index.html"), name='stock-retrieval'),
+    url(r'^$', StockPriceList.as_view(), name='stock-retrieval'),
+    url(r'^sync/$', SyncFeed.as_view(), name='stock-sync'),
 )
