@@ -4,4 +4,23 @@
 {% block page-header %}{% blocktrans %}Stock retrieval{% endblocktrans %}{% endblock %}
 
 {% block content %}
+    <form action="{% url 'stock-sync' %}" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="btn btn-primary" value="{% trans "Pull stock" %}">
+    </form>
+
+    {% regroup object_list by stock as stock_list %}
+
+    {% for stock in stock_list %}
+        <h2>{{ stock.grouper }}</h2>
+
+        <ul>
+            {% for stockprice in stock.list %}
+                <li>
+                    <b>{{ stockprice }}</b>: {{ stockprice.published }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
 {% endblock %}
