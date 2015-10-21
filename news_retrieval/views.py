@@ -10,6 +10,7 @@ from .models import NewsArticle
 from django.core.urlresolvers import reverse_lazy
 
 
+"""
 def word_feats(words):
     return dict([(word, True) for word in words])
 
@@ -29,6 +30,7 @@ print('train on %d instances, test on %d instances' % (len(trainfeats), len(test
 classifier = NaiveBayesClassifier.train(trainfeats)
 print('accuracy:', nltk.classify.util.accuracy(classifier, testfeats))
 classifier.show_most_informative_features()
+"""
 
 
 class NewsArticleList(ListView):
