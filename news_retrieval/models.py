@@ -58,24 +58,25 @@ class NewsArticle(models.Model):
 
     @staticmethod
     def train():
-        feats = []
+        training_feats = []
         for article in NewsArticle.objects.training_data():
             raw = BeautifulSoup(article.description).get_text()
             tokens = nltk.word_tokenize(raw)
             text = nltk.Text(tokens)
-            feats.append(word_feats(text), 'pos')
+            training_feats.append((word_feats(text), 'pos'))
 
-        classifier = NaiveBayesClassifier.train(feats)
+        classifier = NaiveBayesClassifier.train(training_feats)
 
-        tokenized_test_articles = []
+        testing_feats = []
         for article in NewsArticle.objects.test_data():
             raw = BeautifulSoup(article.description).get_text()
             tokens = nltk.word_tokenize(raw)
-            tokenized_test_articles.append((nltk.Text(tokens), 'neg'))
+            text = nltk.Text(tokens)
+            testing_feats.append((word_feats(text), 'pos'))
 
-        print('train on %d instances, test on %d instances' % (len(tokenized_articles), len(tokenized_test_articles)))
+        print('train on %d instances, test on %d instances' % (len(training_feats), len(testing_feats)))
 
-        print('accuracy:', nltk.classify.util.accuracy(classifier, tokenized_test_articles))
+        print('accuracy:', nltk.classify.util.accuracy(classifier, testing_feats))
         classifier.show_most_informative_features()
 
         return classifier
@@ -85,7 +86,9 @@ class NewsArticle(models.Model):
         for article in NewsArticle.objects.new_data():
             raw = BeautifulSoup(article.description).get_text()
             tokens = nltk.word_tokenize(raw)
-            result = classifier.classify(tokens)
+            text = nltk.Text(tokens)
+            result = classifier.classify(word_feats(text))
+            print(result)
             article.classification = result
             article.save()
 
