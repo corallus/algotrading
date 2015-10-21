@@ -21,6 +21,10 @@ class DocumentManager(models.Manager):
         return super(DocumentManager, self).get_queryset().filter(published__gte=datetime.now()-timedelta(days=1))
 
 
+def word_feats(words):
+    return dict([(word, True) for word in words])
+
+
 class NewsArticle(models.Model):
     guid = models.CharField('guid', max_length=200)
     link = models.CharField('link', max_length=400)
@@ -54,15 +58,14 @@ class NewsArticle(models.Model):
 
     @staticmethod
     def train():
-        tokenized_articles = []
+        feats = []
         for article in NewsArticle.objects.training_data():
             raw = BeautifulSoup(article.description).get_text()
             tokens = nltk.word_tokenize(raw)
             text = nltk.Text(tokens)
-            feature = (text, 'neg')
-            tokenized_articles.append(feature)
+            feats.append(word_feats(text), 'pos')
 
-        classifier = NaiveBayesClassifier.train(tokenized_articles)
+        classifier = NaiveBayesClassifier.train(feats)
 
         tokenized_test_articles = []
         for article in NewsArticle.objects.test_data():
