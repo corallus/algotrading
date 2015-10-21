@@ -3,12 +3,11 @@ import math
 import nltk.classify.util
 from nltk.classify import NaiveBayesClassifier
 from nltk.corpus import movie_reviews
-from bs4 import BeautifulSoup
 import pprint
+
 from .forms import SyncFeedForm
 from .models import NewsArticle
 from django.core.urlresolvers import reverse_lazy
-
 
 """
 def word_feats(words):
@@ -32,10 +31,18 @@ print('accuracy:', nltk.classify.util.accuracy(classifier, testfeats))
 classifier.show_most_informative_features()
 """
 
-
 class NewsArticleList(ListView):
     template_name = 'news_retrieval/index.html'
     model = NewsArticle
+
+    def get_context_data(self, **kwargs):
+        context = super(NewsArticleList, self).get_context_data(**kwargs)
+        context.update({
+            'training_data': NewsArticle.objects.training_data(),
+            'test_data': NewsArticle.objects.test_data(),
+            'new_data': NewsArticle.objects.new_data()
+        })
+        return context
 
 
 class SyncFeed(FormView):

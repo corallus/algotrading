@@ -9,6 +9,10 @@
         <input type="submit" class="btn btn-primary" value="{% trans "Pull news articles" %}">
     </form>
 
+    Training data: {{ training_data.count }}
+    Test data: {{ test_data.count }}
+    New data: {{ new_data.count }}
+
     {% regroup object_list by stock as stock_list %}
 
     {% for stock in stock_list %}
@@ -17,7 +21,8 @@
             {% for entry in stock.list %}
                 <li>
                     {{ entry.title }} (<a href="{{ entry.link }}" target="_blank">source</a>)
-                    (status: {{ entry.status }})
+                    (status: {{ entry.status }})<br>
+                    {{ entry.description|safe }}
                 </li>
             {% endfor %}
         </ul>
