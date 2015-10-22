@@ -38,7 +38,7 @@ class FacebookView(TemplateView):
 
 
 class TwitterView(TemplateView):
-    template_name = 'news_retrieval/index.html'
+    template_name = 'social_retrieval/twitter_success.html'
 
     def get_context_data(self, **kwargs):
         context = super(TwitterView, self).get_context_data(**kwargs)
@@ -47,7 +47,7 @@ class TwitterView(TemplateView):
         })
         return context
 
-    def oauth_req(self, url, key, secret, http_method="GET", body="", http_headers=None):
+    def oauth_req(self, url, key, secret, http_method="GET", body="".encode(), http_headers=None):
         consumer = oauth2.Consumer(key=settings.SOCIAL_AUTH_TWITTER_KEY, secret=settings.SOCIAL_AUTH_TWITTER_SECRET)
         token = oauth2.Token(key=key, secret=secret)
         client = oauth2.Client(consumer, token)
