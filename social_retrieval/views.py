@@ -2,11 +2,12 @@ import json
 from django.conf import settings
 from django.views.generic import TemplateView
 import oauth2
-from social_retrieval.models import Tweet
+from social_retrieval.models import Tweet, Link
 from time import strptime, strftime
 
 STOCKS = ['toyota', 'netflix', 'asml', 'volkswagen']
 SINCE_ID = {stock: -1 for stock in STOCKS}
+NUMBER_OF_TWEETS = 100
 
 
 class FacebookView(TemplateView):
@@ -68,21 +69,22 @@ class TwitterView(TemplateView):
 
         for stock in STOCKS:
             baseurl = 'https://api.twitter.com/1.1/search/tweets.json?q=%s' % stock
-            paramdict = {'lang': 'en', 'count': 100}
+            paramdict = {'lang': 'en', 'count': NUMBER_OF_TWEETS}
             if SINCE_ID[stock] != -1:
                 paramdict['since_id'] = SINCE_ID[stock]
             params = ''
             for key, value in paramdict.items():
                 params += '&%s=%s' % (key, value)
             url = baseurl + params
-            print(url)
+            print(url)  # TODO remove
             search = self.oauth_req(url, access_token, access_token_secret)
             str_search = search.decode('utf-8')
             dict = json.loads(str_search)
             for tweet in dict['statuses']:
-                tweet_dict = {'created_at': strftime('%Y-%m-%d %H:%M:%S', strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')),
+                tweet_dict = {'created_at': strftime('%Y-%m-%d %H:%M:%SZ', strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')),
                               'favorite_count': tweet['favorite_count'],
-                              'tweet_id': tweet['id'], 'in_reply_to_status_id': tweet['in_reply_to_status_id'],
+                              'tweet_id': tweet['id'], #'retweeted_status': tweet['retweeted_status'],
+                              'in_reply_to_status_id': tweet['in_reply_to_status_id'],
                               'is_quote_status': tweet['is_quote_status'], 'retweet_count': tweet['retweet_count'],
                               'text': tweet['text'], 'user_id': tweet['user']['id'],
                               'user_followers_count': tweet['user']['followers_count'],
@@ -92,8 +94,27 @@ class TwitterView(TemplateView):
                               'user_screen_name': tweet['user']['screen_name'],
                               'user_statuses_count': tweet['user']['statuses_count']
                               }
-                Tweet.objects.create(**tweet_dict)
-                stock_list.append(tweet_dict)
-                SINCE_ID[stock] = max(SINCE_ID[stock], tweet['id'])
-
+                try:
+                    Tweet.objects.get(tweet_id=tweet_dict['tweet_id'])
+                    break
+                except Tweet.DoesNotExist: # the tweet does not exist, so should be added
+                    database_tweet = Tweet.objects.get_or_create(**tweet_dict)[0]
+                    if 'retweeted_status' in tweet:  # this is a retweet
+                        tweet_id = tweet['retweeted_status']['id']
+                        try:
+                            original_tweet = Tweet.objects.get(tweet_id=tweet_id)
+                            database_tweet.original = original_tweet
+                            database_tweet.save()
+                            print('tweet id ' + str(database_tweet.tweet_id) + ' original set')
+                        except Tweet.DoesNotExist:
+                            print('tweet ' + str(tweet_id) + ' does not exist')  # TODO create this tweet
+                    if tweet['entities']['urls']:  # these are the urls
+                        urls = []
+                        for url in tweet['entities']['urls']:
+                            link = Link.objects.get_or_create(url=url['expanded_url'])[0]
+                            link.save()
+                            urls.append(link)
+                        database_tweet.links.add(*urls)
+                    stock_list.append(tweet_dict)
+                    SINCE_ID[stock] = max(SINCE_ID[stock], tweet['id'])
         return stock_list
