@@ -7,7 +7,6 @@ import credibility.urls
 import news_retrieval.urls
 import social_retrieval.urls
 from django.views.generic import TemplateView
-import indexer.urls
 import stock_retrieval.urls
 import summarize.urls
 import sentiment.urls
