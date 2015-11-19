@@ -82,8 +82,6 @@
                         href="{% url 'stock-retrieval' %}">{% blocktrans %}Stocks{% endblocktrans %}</a></li>
                 <li{% if request.resolver_match.url_name == "credibility" %} class="active"{% endif %}><a
                         href="{% url 'credibility' %}">{% trans 'Credibility' %}</a></li>
-                <li{% if request.resolver_match.url_name == "indexer" %} class="active"{% endif %}><a
-                        href="{% url 'indexer' %}">{% trans 'Indexer' %}</a></li>
                 <li{% if request.resolver_match.url_name == "news-retrieval" %} class="active"{% endif %}><a
                         href="{% url 'news-retrieval' %}">{% blocktrans %}News retrieval{% endblocktrans %}</a></li>
                 <li{% if request.resolver_match.url_name == "social-retrieval" %} class="active"{% endif %}><a
