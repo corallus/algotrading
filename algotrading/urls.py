@@ -14,7 +14,6 @@ import sentiment.urls
 
 urlpatterns = [
     url(r'^authenticate/', include('social.apps.django_app.urls', namespace='social')),
-    url(r'^indexer/', include(indexer.urls)),
     url(r'^credibility/', include(credibility.urls)),
     url(r'^news-retrieval/', include(news_retrieval.urls)),
     url(r'^social-retrieval/', include(social_retrieval.urls)),
