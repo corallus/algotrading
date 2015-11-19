@@ -1,13 +1,13 @@
 from django.views.generic import FormView, ListView
 
 from .forms import SyncFeedForm
-from .models import StockPrice, Stock
+from .models import Share, ShareDay
 from django.core.urlresolvers import reverse_lazy
 
 
-class StockPriceList(ListView):
+class ShareDayList(ListView):
     template_name = 'stock_retrieval/index.html'
-    model = StockPrice
+    model = ShareDay
 
 
 class SyncFeed(FormView):
@@ -15,7 +15,6 @@ class SyncFeed(FormView):
     success_url = reverse_lazy('stock-retrieval')
 
     def form_valid(self, form):
-        Stock.get_stocks()
+        for share in Share.objects.all():
+            share.get_historical()
         return super(SyncFeed, self).form_valid(form)
-
-

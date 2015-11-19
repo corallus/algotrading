@@ -9,18 +9,33 @@
         <input type="submit" class="btn btn-primary" value="{% trans "Pull stock" %}">
     </form>
 
-    {% regroup object_list by stock as stock_list %}
-
-    {% for stock in stock_list %}
-        <h2>{{ stock.grouper }}</h2>
-
-        <ul>
-            {% for stockprice in stock.list %}
-                <li>
-                    <b>{{ stockprice }}</b>: {{ stockprice.published }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{% trans 'date' %}</th>
+            <th>{% trans 'share' %}</th>
+            <th>{% trans 'volume' %}</th>
+            <th>{% trans 'adj. close' %}</th>
+            <th>{% trans 'high' %}</th>
+            <th>{% trans 'low' %}</th>
+            <th>{% trans 'close' %}</th>
+            <th>{% trans 'open' %}</th>
+        </tr>
+        </thead>
+        {% for stockday in object_list %}
+            <tbody>
+            <tr>
+                <td>{{ stockday.date }}</td>
+                <td><b>{{ stockday.share }}</b></td>
+                <td>{{ stockday.volume }}</td>
+                <td>{{ stockday.adj_close }}</td>
+                <td>{{ stockday.high }}</td>
+                <td>{{ stockday.low }}</td>
+                <td>{{ stockday.close }}</td>
+                <td>{{ stockday.open }}</td>
+            </tr>
+            </tbody>
+        {% endfor %}
+    </table>
 
 {% endblock %}
