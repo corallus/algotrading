@@ -10,7 +10,7 @@ class Link(models.Model):
 
 class BaseModel(models.Model):
     text = models.TextField()
-    similar = models.ForeignKey('self', null=True, default=None)  # used for similar posts
+    similar = models.ForeignKey('self', null=True, default=None)  # TODO used for similar posts
     links = models.ManyToManyField(Link)  # TODO make sure all links are formatted the same
 
 

@@ -79,11 +79,12 @@ class TwitterView(TemplateView):
             print(url)  # TODO remove
             search = self.oauth_req(url, access_token, access_token_secret)
             str_search = search.decode('utf-8')
-            dict = json.loads(str_search)
-            for tweet in dict['statuses']:
-                tweet_dict = {'created_at': strftime('%Y-%m-%d %H:%M:%SZ', strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')),
+            tweets = json.loads(str_search)
+            for tweet in tweets['statuses']:
+                tweet_dict = {'created_at': strftime('%Y-%m-%d %H:%M:%SZ',
+                                                     strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')),
                               'favorite_count': tweet['favorite_count'],
-                              'tweet_id': tweet['id'], #'retweeted_status': tweet['retweeted_status'],
+                              'tweet_id': tweet['id'],  # 'retweeted_status': tweet['retweeted_status'],
                               'in_reply_to_status_id': tweet['in_reply_to_status_id'],
                               'is_quote_status': tweet['is_quote_status'], 'retweet_count': tweet['retweet_count'],
                               'text': tweet['text'], 'user_id': tweet['user']['id'],
@@ -97,17 +98,17 @@ class TwitterView(TemplateView):
                 try:
                     Tweet.objects.get(tweet_id=tweet_dict['tweet_id'])
                     break
-                except Tweet.DoesNotExist: # the tweet does not exist, so should be added
+                except Tweet.DoesNotExist:  # the tweet does not exist, so should be added
                     database_tweet = Tweet.objects.get_or_create(**tweet_dict)[0]
                     if 'retweeted_status' in tweet:  # this is a retweet
-                        tweet_id = tweet['retweeted_status']['id']
+                        original_tweet_id = tweet['retweeted_status']['id']
                         try:
-                            original_tweet = Tweet.objects.get(tweet_id=tweet_id)
+                            original_tweet = Tweet.objects.get(tweet_id=original_tweet_id)
                             database_tweet.original = original_tweet
                             database_tweet.save()
                             print('tweet id ' + str(database_tweet.tweet_id) + ' original set')
                         except Tweet.DoesNotExist:
-                            print('tweet ' + str(tweet_id) + ' does not exist')  # TODO create this tweet
+                            print('tweet ' + str(original_tweet_id) + ' does not exist')  # TODO create this tweet
                     if tweet['entities']['urls']:  # these are the urls
                         urls = []
                         for url in tweet['entities']['urls']:
