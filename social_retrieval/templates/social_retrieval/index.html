@@ -5,11 +5,11 @@
 
 {% block content %}
 
-<a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}?next={{ next }}">
-            <i class="fa fa-facebook fa-3x"></i> twitter
+    <a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}?next={{ next }}">
+            <i class="fa fa-facebook fa-3x"></i> log in twitter
         </a>
     <br>
-    <a href="{% url 'social-twitter' %}">
-        get tweets
+    <a class="btn btn-primary" href="{% url 'social-twitter' %}">
+         get tweets
     </a>
 {% endblock %}
