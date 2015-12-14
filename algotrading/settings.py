@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'x-yt4135iu3@o^pxk#g2cih45bk(9hf_6(z!dy-ej!s-g&&a+)'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -133,11 +133,11 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 
-SOCIAL_AUTH_TWITTER_KEY = 'GgDot508Trr2k0jkKbWnILByy'
-SOCIAL_AUTH_TWITTER_SECRET = 'Odcf8j9RJzbm19qI055Mt5w8S9AAfvDHhtpjFbuJwYiBpCwWB1'
+SOCIAL_AUTH_TWITTER_KEY = ''
+SOCIAL_AUTH_TWITTER_SECRET = ''
 
-SOCIAL_AUTH_FACEBOOK_KEY = '488578891323769'
-SOCIAL_AUTH_FACEBOOK_SECRET = 'cdc0b760c6bba4840479a3270b016651'
+SOCIAL_AUTH_FACEBOOK_KEY = ''
+SOCIAL_AUTH_FACEBOOK_SECRET = ''
 SOCIAL_AUTH_FACEBOOK_SCOPE = []
 
 SOCIAL_AUTH_PIPELINE = (
