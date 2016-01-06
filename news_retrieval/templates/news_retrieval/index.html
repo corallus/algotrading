@@ -4,11 +4,6 @@
 {% block page-header %}{% blocktrans %}News retrieval{% endblocktrans %}{% endblock %}
 
 {% block content %}
-    <form action="{% url 'news-sync' %}" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" class="btn btn-primary" value="{% trans "Pull news articles" %}">
-    </form>
-
     Training data: {{ training_data.count }}
     Test data: {{ test_data.count }}
     New data: {{ new_data.count }}
