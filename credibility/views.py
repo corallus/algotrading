@@ -47,6 +47,7 @@ class CredibilityView(TemplateView):
         return context
 
     def get_credibility(self, *people):
+
         result = []
         for person in people:
             credibility = (person, person.get_credibility())
