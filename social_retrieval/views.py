@@ -4,11 +4,12 @@ from django.views.generic import TemplateView
 import oauth2
 from time import strptime, strftime
 
-from document.models import Link
+from document.models import Link, Document
 from social_retrieval.models import Tweet
+from stock_retrieval.models import Share
 
-
-STOCKS = ['toyota', 'netflix', 'asml', 'volkswagen']
+STOCKS = ['Yahoo',]
+SHARES = ['YHOO']
 SINCE_ID = {stock: -1 for stock in STOCKS}
 NUMBER_OF_TWEETS = 100
 
@@ -70,7 +71,9 @@ class TwitterView(TemplateView):
         access_token = twitter_user.access_token['oauth_token']
         access_token_secret = twitter_user.access_token['oauth_token_secret']
 
-        for stock in STOCKS:
+        for share in SHARES:
+            share = Share.objects.get(share=share)
+            stock = 'Yahoo'  # TODO goed zetten
             baseurl = 'https://api.twitter.com/1.1/search/tweets.json?q=%s' % stock
             paramdict = {'lang': 'en', 'count': NUMBER_OF_TWEETS}
             if SINCE_ID[stock] != -1:
@@ -102,7 +105,8 @@ class TwitterView(TemplateView):
                     Tweet.objects.get(tweet_id=tweet_dict['tweet_id'])
                     break
                 except Tweet.DoesNotExist:  # the tweet does not exist, so should be added
-                    database_tweet = Tweet.objects.get_or_create(**tweet_dict)[0]
+                    document = Document.objects.create(share=share, text=tweet_dict.pop('text'))
+                    database_tweet = Tweet.objects.get_or_create(document=document, **tweet_dict)[0]
                     if 'retweeted_status' in tweet:  # this is a retweet
                         original_tweet_id = tweet['retweeted_status']['id']
                         try:
@@ -118,7 +122,7 @@ class TwitterView(TemplateView):
                             link = Link.objects.get_or_create(url=url['expanded_url'])[0]
                             link.save()
                             urls.append(link)
-                        database_tweet.links.add(*urls)
+                        document.links.add(*urls)
                     stock_list.append(tweet_dict)
                     SINCE_ID[stock] = max(SINCE_ID[stock], tweet['id'])
         return stock_list
