@@ -17,7 +17,13 @@ def train():
         tokens = nltk.word_tokenize(raw)
         text = nltk.Text(tokens)
 
+        # get share value before article
+        shareday = ShareDay.objects.filter(share=article.document.share, date__lt=article.published).order_by('date').first()
+        shareday.close
 
+        # get share value after article
+        shareday = ShareDay.objects.filter(share=article.document.share, date__lt=article.published).order_by('date').first()
+        shareday.open
 
         training_feats.append((word_feats(text), 'pos'))
 

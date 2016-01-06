@@ -47,3 +47,6 @@ class ShareDay(models.Model):
     class Meta:
         ordering = ['-date']
 
+
+
+
