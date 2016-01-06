@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'stock_retrieval',
     'summarize',
     'social.apps.django_app.default',
+    'kombu.transport.django',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -156,6 +157,8 @@ SOCIAL_AUTH_PIPELINE = (
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "algotrading/static"),
 )
+
+BROKER_URL = 'django://'
 
 try:
     from algotrading.local_settings import *
