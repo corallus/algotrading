@@ -6,3 +6,4 @@ numpy
 BeautifulSoup4
 oauth2
 yahoo-finance
+django-crispy-forms

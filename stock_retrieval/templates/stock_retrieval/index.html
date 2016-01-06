@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n crispy_forms_tags %}
 
 {% block page-header %}{% blocktrans %}Stock retrieval{% endblocktrans %}{% endblock %}
 
 {% block content %}
+
+    {% crispy form %}
+
     <form action="{% url 'stock-sync' %}" method="post">{% csrf_token %}
-        {{ form.as_p }}
         <input type="submit" class="btn btn-primary" value="{% trans "Pull stock" %}">
     </form>
 

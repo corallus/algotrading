@@ -44,7 +44,10 @@ INSTALLED_APPS = (
     'stock_retrieval',
     'summarize',
     'social.apps.django_app.default',
+    'crispy_forms',
 )
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
