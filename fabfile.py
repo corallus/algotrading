@@ -1,6 +1,6 @@
 import os
 from fabric.api import env, run, prompt, local, get, sudo
-import wolderwijd.settings as settings
+import algotrading.settings as settings
 from fabric.contrib.project import rsync_project
 from fabric.colors import blue, red
 
