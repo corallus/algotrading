@@ -1,22 +1,19 @@
 from django.db import models, transaction
 from math import sqrt
-from social_retrieval.models import Tweet
+
+from document.models import Document
 
 ITERATIONS = 5
 
 
-class CredibilityBaseModel(models.Model):
-    credibility = models.IntegerField(default=1)
+class CredibilityModel(models.Model):
     outgoing = models.ManyToManyField('self', related_name='incoming', symmetrical=False)
-    tweet = models.ForeignKey(Tweet, null=True)
-
-    def __str__(self):
-        return str(self.tweet)
-
-
-class HITS(CredibilityBaseModel):
+    document = models.OneToOneField(Document, null=True)
     hub = models.FloatField(default=1)
     auth = models.FloatField(default=1)
+
+    def __str__(self):
+        return str(self.document)
 
 
 def calculate_HITS():
@@ -28,13 +25,13 @@ def calculate_HITS():
     """
 
 
-    articles = list(HITS.objects.all())
+    articles = list(CredibilityModel.objects.all())
 
     def get_tweet(tweet):
         for article in articles:
             if article.tweet == tweet:
                 return article
-        raise HITS.DoesNotExist()
+        raise CredibilityModel.DoesNotExist()
 
     for article in articles:
         article.hub = 1

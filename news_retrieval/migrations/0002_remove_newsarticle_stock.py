@@ -11,10 +11,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.RemoveField(
             model_name='newsarticle',
             name='stock',
-            field=models.CharField(default=2, max_length=127, choices=[('toyoya', 'toyota'), ('netflix', 'netflix'), ('asml', 'asml'), ('volkswagen', 'volkswagen')]),
-            preserve_default=False,
         ),
     ]

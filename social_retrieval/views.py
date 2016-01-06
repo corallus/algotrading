@@ -2,8 +2,11 @@ import json
 from django.conf import settings
 from django.views.generic import TemplateView
 import oauth2
-from social_retrieval.models import Tweet, Link
-from time import strptime, strftime, sleep
+from time import strptime, strftime
+
+from document.models import Link
+from social_retrieval.models import Tweet
+
 
 STOCKS = ['toyota', 'netflix', 'asml', 'volkswagen']
 SINCE_ID = {stock: -1 for stock in STOCKS}

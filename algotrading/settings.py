@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'crispy_forms',
     'kombu.transport.django',
+    'document'
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

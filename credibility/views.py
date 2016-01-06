@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from credibility.models import HITS, calculate_HITS
+from credibility.models import CredibilityModel, calculate_HITS
 from social_retrieval.models import Tweet
 
 __author__ = 'vincent'
@@ -8,11 +8,11 @@ __author__ = 'vincent'
 def convert_tweet_to_graph():
     tweets = Tweet.objects.all()
     for tweet in tweets:
-        HITS.objects.get_or_create(tweet=tweet)
+        CredibilityModel.objects.get_or_create(tweet=tweet)
     for tweet in tweets:
         if tweet.original:
-            hit = HITS.objects.get(tweet=tweet)
-            original = HITS.objects.get(tweet=tweet.original)
+            hit = CredibilityModel.objects.get(tweet=tweet)
+            original = CredibilityModel.objects.get(tweet=tweet.original)
             hit.outgoing.add(original)
 
 

@@ -1,7 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
-from credibility.models import CredibilityBaseModel, HITS
+from credibility.models import CredibilityModel
 
-admin.site.register(CredibilityBaseModel, admin.ModelAdmin)
-admin.site.register(HITS, admin.ModelAdmin)
+admin.site.register(CredibilityModel, admin.ModelAdmin)

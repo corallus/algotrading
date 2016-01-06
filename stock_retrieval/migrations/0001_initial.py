@@ -11,10 +11,27 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Stock',
+            name='Share',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('display_name', models.CharField(verbose_name='stock', max_length=127)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('share', models.CharField(choices=[('YHOO', 'Yahoo'), ('IBM', 'IBM'), ('TSLA', 'Tesla'), ('ASML.AS', 'ASML')], verbose_name='share', max_length=31, unique=True)),
             ],
+        ),
+        migrations.CreateModel(
+            name='ShareDay',
+            fields=[
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('volume', models.PositiveIntegerField(verbose_name='volume')),
+                ('adj_close', models.DecimalField(max_digits=12, verbose_name='closing value', decimal_places=2)),
+                ('high', models.DecimalField(max_digits=12, verbose_name='highest value', decimal_places=2)),
+                ('low', models.DecimalField(max_digits=12, verbose_name='lowest value', decimal_places=2)),
+                ('date', models.DateTimeField(verbose_name='date')),
+                ('close', models.DecimalField(max_digits=12, verbose_name='close', decimal_places=2)),
+                ('open', models.DecimalField(max_digits=12, verbose_name='open', decimal_places=2)),
+                ('share', models.ForeignKey(verbose_name='share', to='stock_retrieval.Share')),
+            ],
+            options={
+                'ordering': ['-date'],
+            },
         ),
     ]

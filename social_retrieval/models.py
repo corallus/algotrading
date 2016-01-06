@@ -1,21 +1,10 @@
 from django.db import models
 
-
-class Link(models.Model):
-    url = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.url
+from document.models import Document
 
 
-class BaseModel(models.Model):
-    text = models.TextField()
-    similar = models.ForeignKey('self', null=True, default=None)  # TODO used for similar posts
-    links = models.ManyToManyField(Link)  # TODO make sure all links are formatted the same
-
-
-class Tweet(BaseModel):
-
+class Tweet(models.Model):
+    document = models.OneToOneField(Document)
     tweet_id = models.IntegerField()
     created_at = models.DateTimeField()
     favorite_count = models.IntegerField()
