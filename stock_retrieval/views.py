@@ -31,13 +31,3 @@ class CreateShareView(CreateView):
     def form_invalid(self, form):
         return HttpResponseRedirect(reverse_lazy('stock-retrieval'))
 
-
-class SyncFeed(FormView):
-    form_class = SyncFeedForm
-    success_url = reverse_lazy('stock-retrieval')
-
-    def form_valid(self, form):
-        for share in Share.objects.all():
-            share.get_historical()
-        return super(SyncFeed, self).form_valid(form)
-

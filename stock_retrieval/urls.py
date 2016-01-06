@@ -7,5 +7,4 @@ urlpatterns = patterns(
     url(r'^$', ShareDayList.as_view(), name='stock-retrieval'),
     url(r'^create/$', CreateShareView.as_view(), name='stock-create'),
     url(r'^delete/(?P<pk>\d+)/$', DeleteShareView.as_view(), name='stock-delete'),
-    url(r'^sync/$', SyncFeed.as_view(), name='stock-sync'),
 )

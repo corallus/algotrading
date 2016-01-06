@@ -38,9 +38,9 @@ class NewsArticle(models.Model):
         ordering = ['published']
 
     @staticmethod
-    def synchronise():
+    def fetch():
         for share in Share.objects.all():
-            feed = NewsArticle.get_feed(share)
+            feed = feedparser.parse('https://news.google.com/news?q=%s&output=rss' % share)
             for item in feed.entries:
                 if not NewsArticle.objects.filter(guid=item.guid).exists():
                     document = Document(share=share)
@@ -50,8 +50,3 @@ class NewsArticle(models.Model):
                                 published=datetime.strptime(item.published, '%a, %d %b %Y %H:%M:%S %Z')).save()
         # classifier = NewsArticle.train()
         # NewsArticle.classify(classifier)
-
-    @staticmethod
-    def get_feed(stock):
-        articles = feedparser.parse('https://news.google.com/news?q=%s&output=rss' % stock)
-        return articles

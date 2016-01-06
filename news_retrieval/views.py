@@ -47,12 +47,3 @@ class NewsArticleList(ListView):
         return context
 
 
-class SyncFeed(FormView):
-    form_class = SyncFeedForm
-    success_url = reverse_lazy('news-retrieval')
-
-    def form_valid(self, form):
-        NewsArticle.synchronise()
-        return super(SyncFeed, self).form_valid(form)
-
-
