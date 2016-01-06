@@ -8,12 +8,13 @@ __author__ = 'vincent'
 def convert_tweet_to_graph():
     tweets = Tweet.objects.all()
     for tweet in tweets:
-        CredibilityModel.objects.get_or_create(tweet=tweet)
+        CredibilityModel.objects.get_or_create(document=tweet.document)
     for tweet in tweets:
         if tweet.original:
-            hit = CredibilityModel.objects.get(tweet=tweet)
-            original = CredibilityModel.objects.get(tweet=tweet.original)
-            hit.outgoing.add(original)
+            retweet = CredibilityModel.objects.get(
+                document=tweet.document)  # This is a retweet, so link to the original
+            original = CredibilityModel.objects.get(document=tweet.original.document)
+            retweet.outgoing.add(original)
 
 
 def calculate_hits():
@@ -73,4 +74,3 @@ class CredibilityView(TemplateView):
 
     def update_authority(self, person):
         pass
-
