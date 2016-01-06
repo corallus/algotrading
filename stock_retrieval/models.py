@@ -8,19 +8,18 @@ STOCKS = [('YHOO', 'Yahoo'), ('IBM', 'IBM'), ('TSLA', 'Tesla'), ('ASML.AS', 'ASM
 
 
 class Share(models.Model):
-    share = models.CharField(_('share'), max_length=31, choices=STOCKS)
+    share = models.CharField(_('share'), max_length=31, choices=STOCKS, unique=True)
 
     def get_historical(self):
         yahoo = YahooShare(self.share)
-        last_retrieved = self.shareday_set.last()
+        last_retrieved = self.shareday_set.filter(share=self.pk).order_by('date').last()
         if last_retrieved:
-            retrieve_from = last_retrieved.date() + timedelta(days=1)
-            retrieve_from = strftime("%Y-%m-%d", retrieve_from)
+            retrieve_from = last_retrieved.date + timedelta(days=1)
+            retrieve_from = retrieve_from.strftime("%Y-%m-%d")
         else:
             retrieve_from = '2015-01-01'
 
         data = yahoo.get_historical(retrieve_from, strftime("%Y-%m-%d", gmtime()))
-        print(data)
 
         for d in data:
             ShareDay(share=self, volume=d['Volume'], adj_close=d['Adj_Close'], high=d['High'], low=d['Low'],
@@ -36,7 +35,7 @@ class ShareDay(models.Model):
     adj_close = models.DecimalField(_('closing value'), max_digits=12, decimal_places=2)
     high = models.DecimalField(_('highest value'), max_digits=12, decimal_places=2)
     low = models.DecimalField(_('lowest value'), max_digits=12, decimal_places=2)
-    date = models.DateField(_('date'))
+    date = models.DateTimeField(_('date'))
     close = models.DecimalField(_('close'), max_digits=12, decimal_places=2)
     open = models.DecimalField(_('open'), max_digits=12, decimal_places=2)
 
