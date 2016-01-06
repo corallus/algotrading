@@ -5,6 +5,4 @@ nltk
 numpy
 BeautifulSoup4
 oauth2
-yahoo-finance
-celery
 django-crispy-forms
