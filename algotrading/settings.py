@@ -156,3 +156,8 @@ SOCIAL_AUTH_PIPELINE = (
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "algotrading/static"),
 )
+
+try:
+    from algotrading.local_settings import *
+except ImportError:
+    pass

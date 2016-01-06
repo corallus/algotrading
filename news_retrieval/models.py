@@ -91,7 +91,6 @@ class NewsArticle(models.Model):
             article.classification = result
             article.save()
 
-
     @staticmethod
     def get_feed(stock):
         articles = feedparser.parse('https://news.google.com/news?q=%s&output=rss' % stock)
