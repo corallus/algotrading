@@ -46,7 +46,7 @@ def calculate_HITS():
         norm = sqrt(norm)
         for article in articles:
             article.auth /= norm
-        #update the hub scores
+        # update the hub scores
         norm = 0
         for article in articles:
             article.hub = 0
