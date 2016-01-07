@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n crispy_forms_tags %}
+
+{% block page-header %}{% blocktrans %}Social retrieval{% endblocktrans %}{% endblock %}
+
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{% trans 'date' %}</th>
+            <th>{% trans 'share' %}</th>
+            <th>{% trans 'text' %}</th>
+            <th>{% trans 'tweet id' %}</th>
+            <th>{% trans 'original' %}</th>
+            <th>{% trans 'user' %}</th>
+        </tr>
+        </thead>
+        {% for tweet in object_list %}
+            <tbody>
+            <tr>
+                <td>{{ tweet.created_at }}</td>
+                <td><b>{{ tweet.document.share }}</b></td>
+                <td>{{ tweet.document.text }}</td>
+                <td>{{ tweet.tweet_id }}</td>
+                <td>{{ tweet.original }}</td>
+                <td>{{ tweet.user_name }}</td>
+            </tr>
+            </tbody>
+        {% endfor %}
+    </table>
+
+{% endblock %}

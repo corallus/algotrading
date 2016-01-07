@@ -23,3 +23,6 @@ class Tweet(models.Model):
 
     def __str__(self):
         return str(self.tweet_id)
+
+    class Meta:
+        ordering = ['document__share', 'created_at']
