@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from .views import SyncFeed, ShareDayList, CreateShareView, DeleteShareView
+from .views import ShareDayList, CreateShareView, DeleteShareView
 
 
 urlpatterns = patterns(

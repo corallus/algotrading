@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from .views import NewsArticleList, SyncFeed
+from .views import NewsArticleList
 
 
 urlpatterns = patterns(
