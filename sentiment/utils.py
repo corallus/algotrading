@@ -4,6 +4,7 @@ import nltk
 from datetime import timedelta
 from news_retrieval.models import NewsArticle
 from stock_retrieval.models import ShareDay
+# from nltk.sentiment import SentimentAnalyzer http://www.nltk.org/howto/sentiment.html
 
 
 def word_feats(words):
@@ -32,7 +33,7 @@ def train():
         elif value_before > value_after:
             sentiment = 'neg'
         else:
-            sentiment = 'neutral'  # TODO neutral does not work?!
+            sentiment = 'neutral'
 
         training_feats.append((word_feats(text), sentiment))
 
@@ -43,7 +44,25 @@ def train():
         raw = BeautifulSoup(article.description).get_text()
         tokens = nltk.word_tokenize(raw)
         text = nltk.Text(tokens)
-        testing_feats.append((word_feats(text), 'pos'))
+
+        # get share value before article
+        shareday = ShareDay.objects.filter(share=article.document.share,
+                                           date__lt=article.published - timedelta(days=1)).order_by('date').last()
+        value_before = shareday.close
+
+        # get share value x time after article
+        shareday = ShareDay.objects.filter(share=article.document.share,
+                                           date__gt=article.published + timedelta(days=1)).order_by('date').first()
+        value_after = shareday.open
+
+        if value_after > value_before:
+            sentiment = 'pos'
+        elif value_before > value_after:
+            sentiment = 'neg'
+        else:
+            sentiment = 'neutral'
+
+        testing_feats.append((word_feats(text), sentiment))
 
     print('train on %d instances, test on %d instances' % (len(training_feats), len(testing_feats)))
 
