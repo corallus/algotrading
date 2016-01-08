@@ -32,9 +32,10 @@ class Command(BaseCommand):
                 param_dict = {'lang': 'en', 'count': NUMBER_OF_TWEETS, 'result_type': 'recent'}
 
                 try:
-                    last = Tweet.objects.filter(document__share=share).last()
-                    param_dict['since_id'] = last.tweet_id
-                except Tweet.DoesNotExist:
+                    last = Tweet.objects.filter(document__share=share).order_by('tweet_id').last()
+                    if last:
+                        param_dict['since_id'] = last.tweet_id
+                except (Tweet.DoesNotExist):
                     pass
 
                 params = ''
