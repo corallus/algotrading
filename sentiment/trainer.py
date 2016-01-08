@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from nltk.classify import NaiveBayesClassifier
 import nltk
-
+from datetime import timedelta
 from news_retrieval.models import NewsArticle
 from stock_retrieval.models import ShareDay
 
@@ -18,14 +18,23 @@ def train():
         text = nltk.Text(tokens)
 
         # get share value before article
-        shareday = ShareDay.objects.filter(share=article.document.share, date__lt=article.published).order_by('date').first()
-        shareday.close
+        shareday = ShareDay.objects.filter(share=article.document.share,
+                                           date__lt=article.published - timedelta(days=1)).order_by('date').last()
+        value_before = shareday.close
 
-        # get share value after article
-        shareday = ShareDay.objects.filter(share=article.document.share, date__lt=article.published).order_by('date').first()
-        shareday.open
+        # get share value x time after article
+        shareday = ShareDay.objects.filter(share=article.document.share,
+                                           date__gt=article.published + timedelta(days=1)).order_by('date').first()
+        value_after = shareday.open
 
-        training_feats.append((word_feats(text), 'pos'))
+        if value_after > value_before:
+            sentiment = 'pos'
+        elif value_before > value_after:
+            sentiment = 'neg'
+        else:
+            sentiment = 'neutral'  # TODO neutral does not work?!
+
+        training_feats.append((word_feats(text), sentiment))
 
     classifier = NaiveBayesClassifier.train(training_feats)
 
