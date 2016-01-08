@@ -26,20 +26,26 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>{% trans 'time' %}</th>
+            <th>{% trans 'date' %}</th>
             <th>{% trans 'share' %}</th>
-            <th>{% trans 'price' %}</th>
             <th>{% trans 'volume' %}</th>
+            <th>{% trans 'adj. close' %}</th>
+            <th>{% trans 'high' %}</th>
+            <th>{% trans 'low' %}</th>
+            <th>{% trans 'close' %}</th>
             <th>{% trans 'open' %}</th>
         </tr>
         </thead>
         {% for stockday in object_list %}
             <tbody>
             <tr>
-                <td>{{ stockday.time }}</td>
+                <td>{{ stockday.date }}</td>
                 <td><b>{{ stockday.share }}</b></td>
-                <td>{{ stockday.price }}</td>
                 <td>{{ stockday.volume }}</td>
+                <td>{{ stockday.adj_close }}</td>
+                <td>{{ stockday.high }}</td>
+                <td>{{ stockday.low }}</td>
+                <td>{{ stockday.close }}</td>
                 <td>{{ stockday.open }}</td>
             </tr>
             </tbody>

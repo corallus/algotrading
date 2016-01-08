@@ -15,6 +15,8 @@
         <ul>
             <li>{{ entry.published }}</li>
             <li><a href="{{ entry.link }}" target="_blank">source</a></li>
+            <li>{{ entry.document.predicted_sentiment }}</li>
+            <li>{{ entry.document.sentiment }}</li>
         </ul>
     {% endfor %}
 {% endblock %}

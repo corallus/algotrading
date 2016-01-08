@@ -3,17 +3,27 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 
 from .forms import SyncFeedForm, CreateShareForm
-from .models import Share, ShareDay
+from .models import Share, ShareDay, ShareValue
 
 
 class ShareDayList(ListView):
-    template_name = 'stock_retrieval/index.html'
+    template_name = 'stock_retrieval/shareday_list.html'
     model = ShareDay
 
     def get_context_data(self, **kwargs):
         context = super(ShareDayList, self).get_context_data(**kwargs)
         context['form'] = CreateShareForm()
-        context['shares'] = Share.objects.all()
+        return context
+
+
+class ShareValueList(ListView):
+    template_name = 'stock_retrieval/index.html'
+    model = ShareValue
+
+    def get_context_data(self, **kwargs):
+        context = super(ShareValueList, self).get_context_data(**kwargs)
+        context['form'] = CreateShareForm()
+        context['object_list'] = ShareValue.objects.order_by('-time')
         return context
 
 

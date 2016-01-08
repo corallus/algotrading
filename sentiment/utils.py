@@ -1,9 +1,11 @@
 from bs4 import BeautifulSoup
 from nltk.classify import NaiveBayesClassifier
 import nltk
-from datetime import timedelta
+from datetime import timedelta, datetime
 from news_retrieval.models import NewsArticle
-from stock_retrieval.models import ShareDay
+from stock_retrieval.models import ShareValue
+
+
 # from nltk.sentiment import SentimentAnalyzer http://www.nltk.org/howto/sentiment.html
 
 
@@ -11,29 +13,47 @@ def word_feats(words):
     return dict([(word, True) for word in words])
 
 
+def get_sentiment(article):
+    # get share value before article
+    value_before = ShareValue.objects.filter(share=article.document.share, time__lt=article.published).order_by(
+        'time').last().price
+
+    # get share value x time after article
+    value_after = ShareValue.objects.filter(share=article.document.share,
+                                            time__gt=article.published + timedelta(hours=1)).order_by(
+        'time').first().price
+
+    if value_after > value_before:
+        sentiment = 'pos'
+    elif value_before > value_after:
+        sentiment = 'neg'
+    else:
+        sentiment = 'neutral'
+
+    article.document.sentiment = sentiment
+    article.document.save()
+    return sentiment
+
+
+def get_text(article):
+    raw = BeautifulSoup(article.description).get_text()
+    tokens = nltk.word_tokenize(raw)
+    return nltk.Text(tokens)
+
+
 def train():
     training_feats = []
+    first_share_value = ShareValue.objects.first()
+
+    # only articles after a share value was know are interesting
+    relevant_articles = NewsArticle.objects.filter(published__gt=first_share_value.time)
+    relevant_articles_count = relevant_articles.count()
+
+
     for article in NewsArticle.objects.training_data():
-        raw = BeautifulSoup(article.description).get_text()
-        tokens = nltk.word_tokenize(raw)
-        text = nltk.Text(tokens)
+        text = get_text(article)
 
-        # get share value before article
-        shareday = ShareDay.objects.filter(share=article.document.share,
-                                           date__lt=article.published - timedelta(days=1)).order_by('date').last()
-        value_before = shareday.close
-
-        # get share value x time after article
-        shareday = ShareDay.objects.filter(share=article.document.share,
-                                           date__gt=article.published + timedelta(days=1)).order_by('date').first()
-        value_after = shareday.open
-
-        if value_after > value_before:
-            sentiment = 'pos'
-        elif value_before > value_after:
-            sentiment = 'neg'
-        else:
-            sentiment = 'neutral'
+        sentiment = get_sentiment(article)
 
         training_feats.append((word_feats(text), sentiment))
 
@@ -41,26 +61,9 @@ def train():
 
     testing_feats = []
     for article in NewsArticle.objects.test_data():
-        raw = BeautifulSoup(article.description).get_text()
-        tokens = nltk.word_tokenize(raw)
-        text = nltk.Text(tokens)
+        text = get_text(article)
 
-        # get share value before article
-        shareday = ShareDay.objects.filter(share=article.document.share,
-                                           date__lt=article.published - timedelta(days=1)).order_by('date').last()
-        value_before = shareday.close
-
-        # get share value x time after article
-        shareday = ShareDay.objects.filter(share=article.document.share,
-                                           date__gt=article.published + timedelta(days=1)).order_by('date').first()
-        value_after = shareday.open
-
-        if value_after > value_before:
-            sentiment = 'pos'
-        elif value_before > value_after:
-            sentiment = 'neg'
-        else:
-            sentiment = 'neutral'
+        sentiment = get_sentiment(article)
 
         testing_feats.append((word_feats(text), sentiment))
 
@@ -78,5 +81,5 @@ def classify(classifier):
         tokens = nltk.word_tokenize(raw)
         text = nltk.Text(tokens)
         result = classifier.classify(word_feats(text))
-        article.document.classification = result
+        article.document.predicted_sentiment = result
         article.save()

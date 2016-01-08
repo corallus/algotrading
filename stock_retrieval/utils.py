@@ -1,10 +1,17 @@
-from stock_retrieval.models import Share, ShareDay
+from stock_retrieval.models import Share, ShareDay, ShareValue
 from time import gmtime, strftime
 from yahoo_finance import Share as YahooShare
 from datetime import datetime, timedelta
 
 
 def fetch():
+    for share in Share.objects.all():
+        sh = Share(share.share)
+        ShareValue(price=sh.get_price(), open=sh.get_open(),
+                   time=datetime.strptime(sh.get_trade_datetime, '%a, %d %b %Y %H:%M:%S %Z')).save()
+
+
+def fetch_historical():
     for share in Share.objects.all():
         yahoo = YahooShare(share.share)
         last_retrieved = share.shareday_set.filter(share=share.pk).order_by('date').last()
