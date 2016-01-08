@@ -4,6 +4,7 @@ import nltk
 from datetime import timedelta
 from news_retrieval.models import NewsArticle
 from stock_retrieval.models import ShareDay
+# from nltk.sentiment import SentimentAnalyzer http://www.nltk.org/howto/sentiment.html
 
 
 def word_feats(words):
