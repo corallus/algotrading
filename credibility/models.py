@@ -57,8 +57,8 @@ def calculate_HITS():
         for article in articles:
             article.hub /= norm
 
-    max_auth = 0
-    max_hub = 0
+    max_auth = 0  # TODO remove
+    max_hub = 0  # TODO remove
     with transaction.atomic():
         for article in articles:
             article.save()  # save the new values in the database

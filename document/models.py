@@ -11,7 +11,8 @@ class Link(models.Model):
 
 
 class Document(models.Model):
-    share = models.ForeignKey (Share)
+    share = models.ForeignKey(Share)
+    source = models.TextField(max_length=400)
     text = models.TextField(blank=True)
     similar = models.ForeignKey('self', null=True, default=None)  # TODO used for similar posts
     links = models.ManyToManyField(Link)  # TODO make sure all links are formatted the same

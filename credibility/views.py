@@ -61,17 +61,7 @@ class CredibilityView(TemplateView):
 
         # page Rank
 
-        # source (Non twitter)
+        # source (Newspaper or twitter author)
 
         # previously correct
-        pass
-
-    def update_hub_authority(self, person):
-        # make a graph connection from every hub to authority, create when necessary  # TODO also add to crawler
-        pass
-
-    def update_hub(self, person):
-        pass
-
-    def update_authority(self, person):
         pass
