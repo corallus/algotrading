@@ -1,22 +1,21 @@
 import feedparser
-from datetime import datetime
 from stock_retrieval.models import Share
-from news_retrieval.models import NewsArticle
 from document.models import Document
+from django.utils.html import strip_tags
+from dateutil import parser
 
 
 def fetch():
     feeds = [
-        'http://feeds.finance.yahoo.com/rss/2.0/headline?s=%s&lang=en-US',
-        'https://news.google.com/news?q=%s&output=rss'
+        'https://news.google.com/news?q=%s&output=rss',
+        'https://www.google.co.uk/finance/company_news?q=%s&output=rss'
     ]
     for share in Share.objects.all():
         for feed in feeds:
             feed = feedparser.parse(feed % share.share)
             for item in feed.entries:
-                if not NewsArticle.objects.filter(guid=item.guid).exists():
-                    document = Document(share=share)
+                if not Document.objects.filter(guid=item.guid).exists():
+                    text = strip_tags(item.description)
+                    document = Document(share=share, text=text, title=item.title, source=item.link,
+                                        published=parser.parse(item.published), guid=item.guid, type='na')
                     document.save()
-                    NewsArticle(document=document, guid=item.guid, title=item.title, link=item.link,
-                                description=item.description,
-                                published=datetime.strptime(item.published, '%a, %d %b %Y %H:%M:%S %Z')).save()
