@@ -45,7 +45,7 @@ class Command(BaseCommand):
             print(url)  # TODO remove
             search = self.oauth_req(url, access_token, access_token_secret)
             str_search = search.decode('utf-8')
-            tweets = json.loads(str_search)
+            tweets = json.loads(str_search)  # TODO also get the more then 100 latest tweets.
             for tweet in tweets['statuses']:
                 tweet_dict = {'created_at': strftime('%Y-%m-%d %H:%M:%SZ',
                                                      strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')),
