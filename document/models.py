@@ -23,3 +23,10 @@ class Document(models.Model):
     credibility = models.IntegerField(default=1)
     guid = models.CharField('guid', max_length=200)
     type = models.CharField(max_length=10, choices=[('na', 'news article'), ('tw', 'tweet')])
+
+    def __str__(self):
+        if self.title:
+            return self.title
+        else:
+            return self.text
+

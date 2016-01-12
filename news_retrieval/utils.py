@@ -1,8 +1,8 @@
 import feedparser
 from stock_retrieval.models import Share
 from document.models import Document
-from django.utils.html import strip_tags
 from dateutil import parser
+from bs4 import BeautifulSoup
 
 
 def fetch():
@@ -15,7 +15,10 @@ def fetch():
             feed = feedparser.parse(feed % share.share)
             for item in feed.entries:
                 if not Document.objects.filter(guid=item.guid).exists():
-                    text = strip_tags(item.description)
-                    document = Document(share=share, text=text, title=item.title, source=item.link,
+                    soup = BeautifulSoup(item.description, 'html.parser')
+                    text = soup.get_text()
+                    soup = BeautifulSoup(item.title, 'html.parser')
+                    title = soup.get_text()
+                    document = Document(share=share, text=text, title=title, source=item.link,
                                         published=parser.parse(item.published), guid=item.guid, type='na')
                     document.save()
