@@ -2,13 +2,14 @@ from stock_retrieval.models import Share, ShareDay, ShareValue
 from time import gmtime, strftime
 from yahoo_finance import Share as YahooShare
 from datetime import datetime, timedelta
+from dateutil import parser
 
 
 def fetch():
     for share in Share.objects.all():
-        sh = Share(share.share)
-        ShareValue(price=sh.get_price(), open=sh.get_open(),
-                   time=datetime.strptime(sh.get_trade_datetime, '%a, %d %b %Y %H:%M:%S %Z')).save()
+        sh = YahooShare(share.share)
+        ShareValue(share=share, price=sh.get_price(), open=sh.get_open(),
+                   time=parser.parse(sh.get_trade_datetime)).save()
 
 
 def fetch_historical():
