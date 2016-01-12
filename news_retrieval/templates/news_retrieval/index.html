@@ -1,22 +1,19 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block page-header %}{% blocktrans %}News retrieval{% endblocktrans %}{% endblock %}
+{% block page-header %}{% blocktrans %}News Articles{% endblocktrans %}{% endblock %}
 
 {% block content %}
-    Training data: {{ training_data.count }}
-    Test data: {{ test_data.count }}
-    New data: {{ new_data.count }}
 
     {% for entry in object_list %}
         <h3>{{ entry.title }}</h3>
-        <p>{{ entry.description|safe }}</p>
+        <p>{{ entry.text }}</p>
 
         <ul>
             <li>{{ entry.published }}</li>
-            <li><a href="{{ entry.link }}" target="_blank">source</a></li>
-            <li>{{ entry.document.predicted_sentiment }}</li>
-            <li>{{ entry.document.sentiment }}</li>
+            <li><a href="{{ entry.source }}" target="_blank">Source</a></li>
+            <li>{{ entry.predicted_sentiment|default_if_none:'Not predicted' }}</li>
+            <li>{{ entry.sentiment|default_if_none:'Unkown' }}</li>
         </ul>
     {% endfor %}
 {% endblock %}

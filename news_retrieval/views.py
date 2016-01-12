@@ -7,6 +7,8 @@ class NewsArticleList(ListView):
     template_name = 'news_retrieval/index.html'
     model = Document
 
-
+    def get_queryset(self):
+        queryset = super(NewsArticleList, self).get_queryset()
+        return queryset.filter(type='na')
 
 
