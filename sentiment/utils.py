@@ -1,10 +1,8 @@
-from bs4 import BeautifulSoup
 from nltk.classify import NaiveBayesClassifier
 import nltk
-from datetime import timedelta, datetime
-from news_retrieval.models import NewsArticle
+from datetime import timedelta
+from document.models import Document
 from stock_retrieval.models import ShareValue
-
 
 # from nltk.sentiment import SentimentAnalyzer http://www.nltk.org/howto/sentiment.html
 
@@ -13,73 +11,71 @@ def word_feats(words):
     return dict([(word, True) for word in words])
 
 
-def get_sentiment(article):
+def get_impact(document, minutes_after_article):
     # get share value before article
-    value_before = ShareValue.objects.filter(share=article.document.share, time__lt=article.published).order_by(
-        'time').last().price
+    value_before = ShareValue.objects.filter(share=document.share, time__lt=document.published).last().price
 
     # get share value x time after article
-    value_after = ShareValue.objects.filter(share=article.document.share,
-                                            time__gt=article.published + timedelta(hours=1)).order_by(
-        'time').first().price
+    price_after = ShareValue.objects.filter(share=document.share,
+                                            time__gt=document.published + timedelta(minutes=minutes_after_article)).first().price
 
-    if value_after > value_before:
-        sentiment = 'pos'
-    elif value_before > value_after:
-        sentiment = 'neg'
+    if price_after > value_before:
+        impact = 'pos'
+    elif value_before > price_after:
+        impact = 'neg'
     else:
-        sentiment = 'neutral'
+        impact = 'neu'
 
-    article.document.sentiment = sentiment
-    article.document.save()
-    return sentiment
+    document.sentiment = impact
+    document.save()
+    return
 
 
-def get_text(article):
-    raw = BeautifulSoup(article.description).get_text()
-    tokens = nltk.word_tokenize(raw)
+def get_nltktext(text):
+    tokens = nltk.word_tokenize(text)
     return nltk.Text(tokens)
 
 
-def train():
+def train(minutes_after_article):
+    # only articles for which the impact can be calculated are relevant
+    known_data = Document.objects.filter(published__gt=ShareValue.objects.first().time,
+                                         published__lt=ShareValue.objects.last().time + timedelta(
+                                             minutes=minutes_after_article))
+
+    # get impact for documents for which it has not been computed yet
+    for document in known_data.filter(sentiment__isnull=True):
+        get_impact(document, minutes_after_article)
+
+    known_data_count = known_data.count()
+
+    # 2/3 training data
+    num_training_data = int(round(2 * known_data_count / 3))
     training_feats = []
-    first_share_value = ShareValue.objects.first()
+    for document in known_data[:num_training_data]:
+        text = get_nltktext(document.text)
+        training_feats.append((word_feats(text), document.sentiment))
 
-    # only articles after a share value was know are interesting
-    relevant_articles = NewsArticle.objects.filter(published__gt=first_share_value.time)
-    relevant_articles_count = relevant_articles.count()
-
-
-    for article in NewsArticle.objects.training_data():
-        text = get_text(article)
-
-        sentiment = get_sentiment(article)
-
-        training_feats.append((word_feats(text), sentiment))
+    if known_data_count ==  0:
+        return None
 
     classifier = NaiveBayesClassifier.train(training_feats)
 
+    # 1/3 test_data
+    num_testing_data = int(round(known_data_count / 3))
     testing_feats = []
-    for article in NewsArticle.objects.test_data():
-        text = get_text(article)
-
-        sentiment = get_sentiment(article)
-
-        testing_feats.append((word_feats(text), sentiment))
+    for document in known_data[num_training_data:num_testing_data]:
+        text = get_nltktext(document.text)
+        training_feats.append((word_feats(text), document.sentiment))
 
     print('train on %d instances, test on %d instances' % (len(training_feats), len(testing_feats)))
-
     print('accuracy:', nltk.classify.util.accuracy(classifier, testing_feats))
-    classifier.show_most_informative_features()
 
     return classifier
 
 
 def classify(classifier):
-    for article in NewsArticle.objects.new_data():
-        raw = BeautifulSoup(article.description).get_text()
-        tokens = nltk.word_tokenize(raw)
-        text = nltk.Text(tokens)
+    for document in Document.objects.filter(predicted_sentiment__isnull=True):
+        text = get_nltktext(document.text)
         result = classifier.classify(word_feats(text))
-        article.document.predicted_sentiment = result
-        article.save()
+        document.document.predicted_sentiment = result
+        document.save()

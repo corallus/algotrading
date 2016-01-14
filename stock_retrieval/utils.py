@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 
 def fetch():
     for share in Share.objects.all():
-        sh = Share(share.share)
-        ShareValue(price=sh.get_price(), open=sh.get_open(),
-                   time=datetime.strptime(sh.get_trade_datetime, '%a, %d %b %Y %H:%M:%S %Z')).save()
+        sh = YahooShare(share.share)
+        ShareValue(share=share, price=sh.get_price(), open=sh.get_open(), volume=sh.get_volume(),
+                   time=datetime.strptime(sh.get_trade_datetime(), '%Y-%m-%d %H:%M:%S %Z%z')).save()
 
 
 def fetch_historical():
