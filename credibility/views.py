@@ -1,67 +1,37 @@
-from django.views.generic import TemplateView
-from credibility.models import CredibilityModel, calculate_HITS
-from social_retrieval.models import Tweet
+from django.db.models import Max
+from django.views.generic import ListView
+from credibility.models import CredibilityModel, calculate_hits, calculate_source_correctness, calculate_credibility
 
 __author__ = 'vincent'
 
 
-def convert_tweet_to_graph():
-    tweets = Tweet.objects.all()
-    for tweet in tweets:
-        CredibilityModel.objects.get_or_create(document=tweet.document)
-    for tweet in tweets:
-        if tweet.original:
-            retweet = CredibilityModel.objects.get(
-                document=tweet.document)  # This is a retweet, so link to the original
-            original = CredibilityModel.objects.get(document=tweet.original.document)
-            retweet.outgoing.add(original)
-
-
-def calculate_hits():
-    convert_tweet_to_graph()
-    # TODO convert_news_to_graph()
-
-    calculate_HITS()
-    return
-
-
-class HITSView(TemplateView):
-    template_name = 'credibility/hits.html'
+class BaseCredibilityView(ListView):
+    template_name = 'credibility/credibility.html'
+    model = CredibilityModel
 
     def get_context_data(self, **kwargs):
-        context = super(HITSView, self).get_context_data(**kwargs)
-        context.update({
-            'hits': calculate_hits()
-        })
+        context = super(BaseCredibilityView, self).get_context_data(**kwargs)
+        context.update(CredibilityModel.objects.aggregate(Max('auth'), Max('source_score'), Max('credibility'),
+                                                          Max('incoming')))
         return context
 
 
-class CredibilityView(TemplateView):
-    template_name = 'credibility/index.html'
+class HITSView(BaseCredibilityView):
 
-    def get_context_data(self, **kwargs):
-        context = super(CredibilityView, self).get_context_data(**kwargs)
-        context.update({
-            'credibility': self.get_credibility()
-        })
-        return context
+    def get(self, request, *args, **kwargs):
+        calculate_hits()
+        return super(HITSView, self).get(request, *args, **kwargs)
 
-    def get_credibility(self, *people):
 
-        result = []
-        for person in people:
-            credibility = (person, person.get_credibility())
-            result.append(credibility)
-        return result
+class SourceView(BaseCredibilityView):
 
-    def set_credibility(self, *people):
-        # people is a list with all given people
+    def get(self, request, *args, **kwargs):
+        calculate_source_correctness()
+        return super(SourceView, self).get(request, *args, **kwargs)
 
-        # hub, authority
 
-        # page Rank
+class CredibilityView(BaseCredibilityView):
 
-        # source (Newspaper or twitter author)
-
-        # previously correct
-        pass
+    def get(self, request, *args, **kwargs):
+        calculate_credibility()
+        return super(CredibilityView, self).get(request, *args, **kwargs)

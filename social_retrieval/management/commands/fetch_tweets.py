@@ -66,14 +66,18 @@ class Command(BaseCommand):
                     break
                 except Tweet.DoesNotExist:  # the tweet does not exist, so should be added
                     document = Document.objects.create(share=share, text=tweet_dict.pop('text'),
-                                                       source=tweet['user_id'])
+                                                       source=tweet['user']['id'])
                     database_tweet = Tweet.objects.get_or_create(document=document, **tweet_dict)[0]
                     if 'retweeted_status' in tweet:  # this is a retweet
                         original_tweet_id = tweet['retweeted_status']['id']
                         try:
+                            # set this as a retweet
                             original_tweet = Tweet.objects.get(tweet_id=original_tweet_id)
                             database_tweet.original = original_tweet
                             database_tweet.save()
+                            original_document = Document.objects.get(tweet=original_tweet)
+                            document.similar = original_document
+                            document.save()
                             print('tweet id ' + str(database_tweet.tweet_id) + ' original set')
                         except Tweet.DoesNotExist:
                             print('tweet ' + str(original_tweet_id) + ' does not exist')  # TODO create this tweet
