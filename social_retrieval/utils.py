@@ -28,7 +28,8 @@ def fetch():
     access_token_secret = settings.TWITTER_ACCESS_TOKEN_SECRET
 
     for share in Share.objects.all():
-        base_url = 'https://api.twitter.com/1.1/search/tweets.json?q=%s' % share.get_share_display()
+        base_url = 'https://api.twitter.com/1.1/search/tweets.json?q=%23'
+        base_url += share.get_share_display()
         param_dict = {'lang': 'en', 'count': NUMBER_OF_TWEETS, 'result_type': 'recent'}
 
         try:
