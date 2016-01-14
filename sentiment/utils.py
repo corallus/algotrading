@@ -16,13 +16,11 @@ def word_feats(words):
 
 def get_impact(document):
     # get share value before article
-    value_before = ShareValue.objects.filter(share=document.share, time__lt=document.published).order_by(
-        'time').last().price
+    value_before = ShareValue.objects.filter(share=document.share, time__lt=document.published).last().price
 
     # get share value x time after article
     price_after = ShareValue.objects.filter(share=document.share,
-                                            time__gt=document.published + timedelta(minutes=20)).order_by(
-        'time').first().price
+                                            time__gt=document.published + timedelta(minutes=20)).first().price
 
     if price_after > value_before:
         impact = 'pos'
@@ -43,8 +41,8 @@ def get_nltktext(text):
 
 def train():
     # only articles for which the impact can be calculated are relevant
-    known_data = Document.objects.filter(published__gt=ShareValue.objects.order_by('time').first().time,
-                                         published__lt=ShareValue.objects.order_by('time').last().time + timedelta(
+    known_data = Document.objects.filter(published__gt=ShareValue.objects.first().time,
+                                         published__lt=ShareValue.objects.last().time + timedelta(
                                              minutes=20))
 
     # get impact for documents for which it has not been computed yet
@@ -55,15 +53,20 @@ def train():
 
     # 2/3 training data
     num_training_data = int(round(2 * known_data_count / 3))
+    print(num_training_data)
     training_feats = []
     for document in known_data[:num_training_data]:
         text = get_nltktext(document.text)
         training_feats.append((word_feats(text), document.sentiment))
 
+    if known_data_count ==  0:
+        return None
+
     classifier = NaiveBayesClassifier.train(training_feats)
 
     # 1/3 test_data
     num_testing_data = int(round(known_data_count / 3))
+    print(num_testing_data)
     testing_feats = []
     for document in known_data[num_training_data:num_testing_data]:
         text = get_nltktext(document.text)
@@ -78,7 +81,7 @@ def train():
 
 
 def classify(classifier):
-    for document in Document.objects.new_data():
+    for document in Document.objects.filter(predicted_sentiment__isnull=True):
         text = get_nltktext(document.text)
         result = classifier.classify(word_feats(text))
         document.document.predicted_sentiment = result
