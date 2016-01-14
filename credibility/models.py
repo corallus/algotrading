@@ -124,18 +124,19 @@ def calculate_source_correctness():
             source.source_correct = 0
             source.total = 0
 
-            #check all documents connected to this source
+            # check all documents connected to this source
             for credibility_model in source.credibility_models.all():
                 # check if we already know if correct
                 if not credibility_model.document.sentiment:
                     continue
                     # we do not know the impact yet, so skip this document
-                print('predicted')
+                if not credibility_model.document.predicted_sentiment:
+                    continue
+                    # this article was not predicted is used for training instead
                 source.total += 1
                 # we know the impact of this document so total + 1
                 if credibility_model.document.sentiment == credibility_model.document.predicted_sentiment:
                     source.source_correct += 1
-                    print('correct')
             source.save()
 
     total_sum = SourceModel.objects.aggregate(Sum('total'))['total__sum']
