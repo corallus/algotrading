@@ -6,6 +6,7 @@ from django.conf import settings
 from time import strptime, strftime
 import json
 import oauth2
+from dateutil import parser
 
 NUMBER_OF_TWEETS = 100
 
@@ -47,8 +48,7 @@ class Command(BaseCommand):
             str_search = search.decode('utf-8')
             tweets = json.loads(str_search)  # TODO also get the more then 100 latest tweets.
             for tweet in tweets['statuses']:
-                tweet_dict = {'created_at': strftime('%Y-%m-%d %H:%M:%SZ',
-                                                     strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')),
+                tweet_dict = {'created_at': parser.parse(tweet['created_at']),
                               'favorite_count': tweet['favorite_count'],
                               'tweet_id': tweet['id'],  # 'retweeted_status': tweet['retweeted_status'],
                               'in_reply_to_status_id': tweet['in_reply_to_status_id'],
