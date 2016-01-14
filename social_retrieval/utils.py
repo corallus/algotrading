@@ -64,7 +64,7 @@ def fetch():
                     break
                 except Tweet.DoesNotExist:  # the tweet does not exist, so should be added
                     document = Document.objects.create(share=share, text=tweet_dict.pop('text'),
-                                                       source=tweet['user']['id'])
+                                                       source=tweet['user']['id'], type='tw')
                     database_tweet = Tweet.objects.get_or_create(document=document, **tweet_dict)[0]
                     if 'retweeted_status' in tweet:  # this is a retweet
                         original_tweet_id = tweet['retweeted_status']['id']
