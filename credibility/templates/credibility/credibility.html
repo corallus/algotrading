@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load i18n crispy_forms_tags %}
+
+{% block page-header %}{% blocktrans %}Credibility{% endblocktrans %}{% endblock %}
+
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{% trans 'share' %}</th>
+            <th>{% trans 'incoming' %}</th>
+            <th>{% trans 'auth' %}</th>
+            <th>{% trans 'source' %}</th>
+            <th>{% trans 'source score' %}</th>
+            <th>{% trans 'credibility' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>Max</b></td>
+                <td><b>{{ incoming__max }}</b></td>
+                <td><b>{{ auth__max }}</b></td>
+                <td><b></b></td>
+                <td><b>{{ source_score__max }}</b></td>
+                <td><b>{{ credibility__max }}</b></td>
+            </tr>
+        {% for credibility in object_list %}
+            <tr>
+                <td>{{ credibility.document.share }}</td>
+                <td>{{ credibility.incoming.count }}</td>
+                <td>{{ credibility.auth }}</td>
+                <td>{{ credibility.document.source }}</td>
+                <td>{{ credibility.source_score }}</td>
+                <td>{{ credibility.credibility }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

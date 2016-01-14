@@ -4,8 +4,14 @@
 {% block page-header %}{% trans "Credibility" %}{% endblock %}
 
 {% block content %}
+    <a class="btn btn-primary" href="{% url 'overall-credibility' %}">
+        <i class="fa fa-facebook fa-3x"></i> calculate credibility
+    </a>
     <a class="btn btn-primary" href="{% url 'credibility-hits' %}">
-        <i class="fa fa-facebook fa-3x"></i> calculate hits
+        <i class="fa fa-facebook fa-3x"></i> calculate only hits
+    </a>
+    <a class="btn btn-primary" href="{% url 'credibility-source' %}">
+        <i class="fa fa-facebook fa-3x"></i> calculate only source
     </a>
 
 {% endblock %}

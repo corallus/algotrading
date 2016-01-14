@@ -4,7 +4,7 @@ from document.models import Document
 
 
 class Tweet(models.Model):
-    document = models.OneToOneField(Document)
+    document = models.OneToOneField(Document, related_name='tweet')
     tweet_id = models.IntegerField()
     created_at = models.DateTimeField()
     favorite_count = models.IntegerField()
