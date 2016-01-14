@@ -12,7 +12,7 @@ NUMBER_OF_TWEETS = 100
 
 
 def fetch():
-        '''
+        """
         This is how the access token should be obtained, but needs a request object and logged in user
         try:
             twitter_user = self.request.user.social_auth.get(provider='twitter')
@@ -21,7 +21,7 @@ def fetch():
         if not twitter_user.access_token:
             return
         access_token = twitter_user.access_token['oauth_token']
-        access_token_secret = twitter_user.access_token['oauth_token_secret']'''
+        access_token_secret = twitter_user.access_token['oauth_token_secret']"""
 
         access_token = settings.TWITTER_ACCESS_TOKEN
         access_token_secret = settings.TWITTER_ACCESS_TOKEN_SECRET
