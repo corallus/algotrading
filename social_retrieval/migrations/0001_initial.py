@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tweet',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('tweet_id', models.IntegerField()),
                 ('created_at', models.DateTimeField()),
                 ('favorite_count', models.IntegerField()),
@@ -29,8 +29,11 @@ class Migration(migrations.Migration):
                 ('user_name', models.CharField(max_length=255)),
                 ('user_screen_name', models.CharField(max_length=255)),
                 ('user_statuses_count', models.IntegerField()),
-                ('document', models.OneToOneField(to='document.Document')),
+                ('document', models.OneToOneField(related_name='tweet', to='document.Document')),
                 ('original', models.ForeignKey(null=True, to='social_retrieval.Tweet')),
             ],
+            options={
+                'ordering': ['document__share', 'created_at'],
+            },
         ),
     ]

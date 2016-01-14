@@ -14,16 +14,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Document',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
-                ('text', models.TextField()),
-                ('classification', models.CharField(verbose_name='classification', max_length=127)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('source', models.TextField(max_length=400)),
+                ('published', models.DateTimeField(verbose_name='published')),
+                ('title', models.CharField(max_length=200, verbose_name='title')),
+                ('text', models.TextField(blank=True)),
+                ('predicted_sentiment', models.CharField(null=True, max_length=127, verbose_name='predicted sentiment')),
+                ('sentiment', models.CharField(null=True, max_length=127, verbose_name='sentiment')),
                 ('credibility', models.IntegerField(default=1)),
+                ('guid', models.CharField(max_length=200, verbose_name='guid')),
+                ('type', models.CharField(choices=[('na', 'news article'), ('tw', 'tweet')], max_length=10)),
             ],
+            options={
+                'ordering': ['published'],
+            },
         ),
         migrations.CreateModel(
             name='Link',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('url', models.CharField(max_length=255)),
             ],
         ),
@@ -40,6 +49,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='document',
             name='similar',
-            field=models.ForeignKey(null=True, default=None, to='document.Document'),
+            field=models.ForeignKey(to='document.Document', default=None, null=True, blank=True),
         ),
     ]
