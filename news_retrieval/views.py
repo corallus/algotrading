@@ -9,6 +9,4 @@ class NewsArticleList(ListView):
 
     def get_queryset(self):
         queryset = super(NewsArticleList, self).get_queryset()
-        return queryset.filter(type='na')
-
-
+        return queryset.order_by('-published').filter(type='na')

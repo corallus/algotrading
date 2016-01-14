@@ -30,3 +30,5 @@ class Document(models.Model):
         else:
             return self.text
 
+    class Meta:
+        ordering = ['published']

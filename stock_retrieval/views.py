@@ -10,6 +10,10 @@ class ShareDayList(ListView):
     template_name = 'stock_retrieval/shareday_list.html'
     model = ShareDay
 
+    def get_queryset(self):
+        queryset = super(ShareDayList, self).get_queryset()
+        return queryset.order_by('-time')
+
     def get_context_data(self, **kwargs):
         context = super(ShareDayList, self).get_context_data(**kwargs)
         context['form'] = CreateShareForm()
@@ -20,10 +24,13 @@ class ShareValueList(ListView):
     template_name = 'stock_retrieval/index.html'
     model = ShareValue
 
+    def get_queryset(self):
+        queryset = super(ShareValueList, self).get_queryset()
+        return queryset.order_by('-time')
+
     def get_context_data(self, **kwargs):
         context = super(ShareValueList, self).get_context_data(**kwargs)
         context['form'] = CreateShareForm()
-        context['object_list'] = ShareValue.objects.order_by('-time')
         return context
 
 
