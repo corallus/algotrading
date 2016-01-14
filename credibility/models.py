@@ -15,6 +15,9 @@ class SourceModel(models.Model):
     source_correct = models.FloatField(default=0)
     total = models.FloatField(default=0)
 
+    def __str__(self):
+        return self.document_source
+
 
 class CredibilityModel(models.Model):
     outgoing = models.ManyToManyField('self', related_name='incoming', symmetrical=False)
@@ -38,7 +41,12 @@ def convert_document_to_graph():
         for document in documents:
             model = CredibilityModel.objects.get_or_create(document=document)[0]
             if document.source:
-                source = SourceModel.objects.get_or_create(document_source=document.source)[0]
+                if document.type == 'na':
+                    parsed_uri = urlparse(document.source)
+                    source_name = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+                else:
+                    source_name = document.source
+                source = SourceModel.objects.get_or_create(document_source=source_name)[0]
                 model.source = source
                 model.save()
     for document in documents:
