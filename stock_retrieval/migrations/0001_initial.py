@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name='Share',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('share', models.CharField(unique=True, max_length=31, verbose_name='share', choices=[(b'YHOO', b'Yahoo'), (b'IBM', b'IBM'), (b'TSLA', b'Tesla'), (b'ASML.AS', b'ASML')])),
+                ('share', models.CharField(verbose_name='share', choices=[('YHOO', 'Yahoo'), ('IBM', 'IBM'), ('TSLA', 'Tesla'), ('ASML.AS', 'ASML')], max_length=31, unique=True)),
             ],
         ),
         migrations.CreateModel(
@@ -22,13 +22,13 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('volume', models.PositiveIntegerField(verbose_name='volume')),
-                ('adj_close', models.DecimalField(verbose_name='closing value', max_digits=12, decimal_places=2)),
-                ('high', models.DecimalField(verbose_name='highest value', max_digits=12, decimal_places=2)),
-                ('low', models.DecimalField(verbose_name='lowest value', max_digits=12, decimal_places=2)),
+                ('adj_close', models.DecimalField(verbose_name='closing value', decimal_places=2, max_digits=12)),
+                ('high', models.DecimalField(verbose_name='highest value', decimal_places=2, max_digits=12)),
+                ('low', models.DecimalField(verbose_name='lowest value', decimal_places=2, max_digits=12)),
                 ('date', models.DateTimeField(verbose_name='date')),
-                ('close', models.DecimalField(verbose_name='close', max_digits=12, decimal_places=2)),
-                ('open', models.DecimalField(verbose_name='open', max_digits=12, decimal_places=2)),
-                ('share', models.ForeignKey(verbose_name='share', to='stock_retrieval.Share')),
+                ('close', models.DecimalField(verbose_name='close', decimal_places=2, max_digits=12)),
+                ('open', models.DecimalField(verbose_name='open', decimal_places=2, max_digits=12)),
+                ('share', models.ForeignKey(to='stock_retrieval.Share', verbose_name='share')),
             ],
             options={
                 'ordering': ['date'],
@@ -40,9 +40,9 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('volume', models.PositiveIntegerField(verbose_name='volume')),
                 ('time', models.DateTimeField(verbose_name='date')),
-                ('open', models.DecimalField(verbose_name='open', max_digits=12, decimal_places=2)),
-                ('price', models.DecimalField(verbose_name='price', max_digits=12, decimal_places=2)),
-                ('share', models.ForeignKey(verbose_name='share', to='stock_retrieval.Share')),
+                ('open', models.DecimalField(verbose_name='open', decimal_places=2, max_digits=12)),
+                ('price', models.DecimalField(verbose_name='price', decimal_places=2, max_digits=12)),
+                ('share', models.ForeignKey(to='stock_retrieval.Share', verbose_name='share')),
             ],
             options={
                 'ordering': ['time'],

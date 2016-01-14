@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('user_name', models.CharField(max_length=255)),
                 ('user_screen_name', models.CharField(max_length=255)),
                 ('user_statuses_count', models.IntegerField()),
-                ('document', models.OneToOneField(related_name='tweet', to='document.Document')),
+                ('document', models.OneToOneField(to='document.Document', related_name='tweet')),
                 ('original', models.ForeignKey(to='social_retrieval.Tweet', null=True)),
             ],
             options={

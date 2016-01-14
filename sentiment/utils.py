@@ -28,7 +28,6 @@ def get_impact(document, minutes_after_article):
 
     document.sentiment = impact
     document.save()
-    return
 
 
 def get_nltktext(text):

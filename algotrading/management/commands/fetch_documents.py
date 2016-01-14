@@ -20,4 +20,4 @@ class Command(BaseCommand):
                     if classifier:
                         classifier.show_most_informative_features()
                         classify(classifier)  # classify unknown documents
-            time.sleep(10)
+            time.sleep(50)

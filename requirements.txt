@@ -1,5 +1,5 @@
 django==1.8.4
-MySQL-python
+mysqlclient
 python-social-auth
 feedparser
 nltk
@@ -8,3 +8,4 @@ BeautifulSoup4
 oauth2
 django-crispy-forms
 python-dateutil
+yahoo-finance
