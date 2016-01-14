@@ -1,6 +1,7 @@
+from urllib.parse import urlparse
 from django.db import models, transaction
 from math import sqrt
-from django.db.models import Sum, Max
+from django.db.models import Sum, Max, Count
 
 from document.models import Document
 
@@ -18,7 +19,7 @@ class SourceModel(models.Model):
 class CredibilityModel(models.Model):
     outgoing = models.ManyToManyField('self', related_name='incoming', symmetrical=False)
     document = models.OneToOneField(Document, null=True)
-    hub = models.FloatField(default=0)
+    hub = models.FloatField(default=1)
     auth = models.FloatField(default=0)
     source_score = models.FloatField(default=0)
     credibility = models.FloatField(default=1)
@@ -30,6 +31,8 @@ class CredibilityModel(models.Model):
 
 def convert_document_to_graph():
     print('constructing graph...')  # TODO log
+    CredibilityModel.objects.all().delete()
+    SourceModel.objects.all().delete()
     documents = Document.objects.all()
     with transaction.atomic():
         for document in documents:
@@ -68,6 +71,8 @@ def calculate_hits():
     """
     print('calculating hits...')  # TODO log
 
+    # set all hub and auth to 1
+    CredibilityModel.objects.update(hub=1, auth=1)
     articles = list(CredibilityModel.objects.all())
 
     exists = False
@@ -105,10 +110,9 @@ def calculate_hits():
         for article in articles:
             article.save()  # save the new values in the database
 
-    maxima = CredibilityModel.objects.aggregate(Max('auth'), Max('hub'), Max('incoming'))
+    maxima = CredibilityModel.objects.aggregate(Max('auth'), Max('hub'))
     print('max auth ' + str(maxima['auth__max']))  # TODO log
     print('max hub ' + str(maxima['hub__max']))  # TODO log
-    print('max incoming ' + str(maxima['incoming__max']))  # TODO log
 
 
 def calculate_source_correctness():

@@ -1,4 +1,4 @@
-from django.db.models import Max
+from django.db.models import Max, Count
 from django.views.generic import ListView
 from credibility.models import CredibilityModel, calculate_hits, calculate_source_correctness, calculate_credibility
 
@@ -12,7 +12,7 @@ class BaseCredibilityView(ListView):
     def get_context_data(self, **kwargs):
         context = super(BaseCredibilityView, self).get_context_data(**kwargs)
         context.update(CredibilityModel.objects.aggregate(Max('auth'), Max('source_score'), Max('credibility'),
-                                                          Max('incoming')))
+                                                          Count('incoming')))
         return context
 
 
