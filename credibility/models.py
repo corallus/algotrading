@@ -29,7 +29,7 @@ class CredibilityModel(models.Model):
 
 
 def convert_document_to_graph():
-    print('constructing graph...')
+    print('constructing graph...')  # TODO log
     documents = Document.objects.all()
     with transaction.atomic():
         for document in documents:
@@ -47,7 +47,7 @@ def convert_document_to_graph():
 
 
 def set_credibility():
-    print('setting credibility...')
+    print('setting credibility...')  # TODO log
     with transaction.atomic():
         for credibility_model in CredibilityModel.objects.all():
             credibility = 1
@@ -66,7 +66,7 @@ def calculate_hits():
 
     :return:
     """
-    print('calculating hits...')
+    print('calculating hits...')  # TODO log
 
     articles = list(CredibilityModel.objects.all())
 
@@ -101,23 +101,18 @@ def calculate_hits():
         for article in articles:
             article.hub /= norm
 
-    max_auth = 0  # TODO remove
-    max_hub = 0  # TODO remove
-    max_incoming = 0  # TODO remove
     with transaction.atomic():
         for article in articles:
             article.save()  # save the new values in the database
-            max_auth = max(max_auth, article.auth)
-            max_hub = max(max_hub, article.hub)
-            max_incoming = max(max_incoming, article.incoming.count())
 
-    print('max auth ' + str(max_auth))  # TODO remove
-    print('max hub ' + str(max_hub))  # TODO remove
-    print('max incoming ' + str(max_incoming))  # TODO remove
+    maxima = CredibilityModel.objects.aggregate(Max('auth'), Max('hub'), Max('incoming'))
+    print('max auth ' + str(maxima['auth__max']))  # TODO log
+    print('max hub ' + str(maxima['hub__max']))  # TODO log
+    print('max incoming ' + str(maxima['incoming__max']))  # TODO log
 
 
 def calculate_source_correctness():
-    print('calculating source...')
+    print('calculating source...')  # TODO log
     with transaction.atomic():
         for source in SourceModel.objects.all():
             # first make sure to set everything back to zero.
@@ -155,7 +150,7 @@ def calculate_source_correctness():
             credibility_model.source_score = score
             credibility_model.save()
 
-    print('max source: '+str(CredibilityModel.objects.aggregate(Max('source_score'))['source_score__max']))
+    print('max source: '+str(CredibilityModel.objects.aggregate(Max('source_score'))['source_score__max']))  # TODO log
 
 
 def calculate_credibility():
@@ -163,4 +158,3 @@ def calculate_credibility():
     calculate_hits()
     calculate_source_correctness()
     set_credibility()
-    print('credibility done')
