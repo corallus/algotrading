@@ -4,9 +4,6 @@ from datetime import timedelta
 from document.models import Document
 from stock_retrieval.models import ShareValue
 
-minutes_after = [0, 5, 20, 40, 60, 100, 160, 260, 420, 680]
-
-
 # from nltk.sentiment import SentimentAnalyzer http://www.nltk.org/howto/sentiment.html
 
 
@@ -14,13 +11,13 @@ def word_feats(words):
     return dict([(word, True) for word in words])
 
 
-def get_impact(document):
+def get_impact(document, minutes_after_article):
     # get share value before article
     value_before = ShareValue.objects.filter(share=document.share, time__lt=document.published).last().price
 
     # get share value x time after article
     price_after = ShareValue.objects.filter(share=document.share,
-                                            time__gt=document.published + timedelta(minutes=20)).first().price
+                                            time__gt=document.published + timedelta(minutes=minutes_after_article)).first().price
 
     if price_after > value_before:
         impact = 'pos'
@@ -39,21 +36,20 @@ def get_nltktext(text):
     return nltk.Text(tokens)
 
 
-def train():
+def train(minutes_after_article):
     # only articles for which the impact can be calculated are relevant
     known_data = Document.objects.filter(published__gt=ShareValue.objects.first().time,
                                          published__lt=ShareValue.objects.last().time + timedelta(
-                                             minutes=20))
+                                             minutes=minutes_after_article))
 
     # get impact for documents for which it has not been computed yet
     for document in known_data.filter(sentiment__isnull=True):
-        get_impact(document)
+        get_impact(document, minutes_after_article)
 
     known_data_count = known_data.count()
 
     # 2/3 training data
     num_training_data = int(round(2 * known_data_count / 3))
-    print(num_training_data)
     training_feats = []
     for document in known_data[:num_training_data]:
         text = get_nltktext(document.text)
@@ -66,16 +62,13 @@ def train():
 
     # 1/3 test_data
     num_testing_data = int(round(known_data_count / 3))
-    print(num_testing_data)
     testing_feats = []
     for document in known_data[num_training_data:num_testing_data]:
         text = get_nltktext(document.text)
         training_feats.append((word_feats(text), document.sentiment))
 
     print('train on %d instances, test on %d instances' % (len(training_feats), len(testing_feats)))
-
     print('accuracy:', nltk.classify.util.accuracy(classifier, testing_feats))
-    classifier.show_most_informative_features()
 
     return classifier
 
