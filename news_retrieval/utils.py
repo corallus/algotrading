@@ -13,8 +13,10 @@ def fetch():
     for share in Share.objects.all():
         for feed in feeds:
             feed = feedparser.parse(feed % share.share)
+            results = False
             for item in feed.entries:
                 if not Document.objects.filter(guid=item.guid).exists():
+                    results = True
                     soup = BeautifulSoup(item.description, 'html.parser')
                     text = soup.get_text()
                     soup = BeautifulSoup(item.title, 'html.parser')
@@ -22,3 +24,4 @@ def fetch():
                     document = Document(share=share, text=text, title=title, source=item.link,
                                         published=parser.parse(item.published), guid=item.guid, type='na')
                     document.save()
+    return results

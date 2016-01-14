@@ -16,14 +16,14 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('source', models.TextField(max_length=400)),
-                ('published', models.DateTimeField(verbose_name=b'published')),
-                ('title', models.CharField(max_length=200, verbose_name=b'title')),
+                ('published', models.DateTimeField(verbose_name='published')),
+                ('title', models.CharField(verbose_name='title', max_length=200)),
                 ('text', models.TextField(blank=True)),
-                ('predicted_sentiment', models.CharField(max_length=127, null=True, verbose_name=b'predicted sentiment')),
-                ('sentiment', models.CharField(max_length=127, null=True, verbose_name=b'sentiment')),
+                ('predicted_sentiment', models.CharField(verbose_name='predicted sentiment', null=True, max_length=127)),
+                ('sentiment', models.CharField(verbose_name='sentiment', null=True, max_length=127)),
                 ('credibility', models.IntegerField(default=1)),
-                ('guid', models.CharField(max_length=200, verbose_name=b'guid')),
-                ('type', models.CharField(max_length=10, choices=[(b'na', b'news article'), (b'tw', b'tweet')])),
+                ('guid', models.CharField(verbose_name='guid', max_length=200)),
+                ('type', models.CharField(max_length=10, choices=[('na', 'news article'), ('tw', 'tweet')])),
             ],
             options={
                 'ordering': ['published'],
@@ -49,6 +49,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='document',
             name='similar',
-            field=models.ForeignKey(default=None, blank=True, to='document.Document', null=True),
+            field=models.ForeignKey(null=True, default=None, blank=True, to='document.Document'),
         ),
     ]
