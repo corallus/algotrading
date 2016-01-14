@@ -14,16 +14,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Document',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('source', models.TextField(max_length=400)),
-                ('published', models.DateTimeField(verbose_name='published')),
-                ('title', models.CharField(max_length=200, verbose_name='title')),
+                ('published', models.DateTimeField(verbose_name=b'published')),
+                ('title', models.CharField(max_length=200, verbose_name=b'title')),
                 ('text', models.TextField(blank=True)),
-                ('predicted_sentiment', models.CharField(null=True, max_length=127, verbose_name='predicted sentiment')),
-                ('sentiment', models.CharField(null=True, max_length=127, verbose_name='sentiment')),
+                ('predicted_sentiment', models.CharField(max_length=127, null=True, verbose_name=b'predicted sentiment')),
+                ('sentiment', models.CharField(max_length=127, null=True, verbose_name=b'sentiment')),
                 ('credibility', models.IntegerField(default=1)),
-                ('guid', models.CharField(max_length=200, verbose_name='guid')),
-                ('type', models.CharField(choices=[('na', 'news article'), ('tw', 'tweet')], max_length=10)),
+                ('guid', models.CharField(max_length=200, verbose_name=b'guid')),
+                ('type', models.CharField(max_length=10, choices=[(b'na', b'news article'), (b'tw', b'tweet')])),
             ],
             options={
                 'ordering': ['published'],
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Link',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('url', models.CharField(max_length=255)),
             ],
         ),
@@ -49,6 +49,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='document',
             name='similar',
-            field=models.ForeignKey(to='document.Document', default=None, null=True, blank=True),
+            field=models.ForeignKey(default=None, blank=True, to='document.Document', null=True),
         ),
     ]

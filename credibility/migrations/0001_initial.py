@@ -14,19 +14,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CredibilityModel',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('hub', models.FloatField(default=0)),
                 ('auth', models.FloatField(default=0)),
                 ('source_score', models.FloatField(default=0)),
                 ('credibility', models.FloatField(default=1)),
                 ('document', models.OneToOneField(null=True, to='document.Document')),
-                ('outgoing', models.ManyToManyField(to='credibility.CredibilityModel', related_name='incoming')),
+                ('outgoing', models.ManyToManyField(related_name='incoming', to='credibility.CredibilityModel')),
             ],
         ),
         migrations.CreateModel(
             name='SourceModel',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('document_source', models.TextField(max_length=400)),
                 ('source_correct', models.FloatField(default=0)),
                 ('total', models.FloatField(default=0)),
@@ -35,6 +35,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='credibilitymodel',
             name='source',
-            field=models.ForeignKey(null=True, related_name='credibility_models', to='credibility.SourceModel'),
+            field=models.ForeignKey(related_name='credibility_models', to='credibility.SourceModel', null=True),
         ),
     ]

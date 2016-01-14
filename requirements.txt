@@ -1,5 +1,5 @@
 django==1.8.4
-mysqlclient
+MySQL-python
 python-social-auth
 feedparser
 nltk
