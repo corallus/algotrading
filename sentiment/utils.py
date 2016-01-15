@@ -58,7 +58,7 @@ def train():
     known_data = Document.objects.filter(sentiment__isnull=False)
     known_data_count = known_data.count()
     if known_data_count == 0:
-        return None
+        return None, 0
 
     # 2/3 training data
     num_training_data = int(round(2 * known_data_count / 3))
