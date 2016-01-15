@@ -7,4 +7,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         while True:
             fetch_stock()
-            time.sleep(10)
+            time.sleep(60)

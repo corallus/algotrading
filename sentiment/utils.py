@@ -53,27 +53,25 @@ def train(minutes_after_article):
         get_impact(document, minutes_after_article)
 
     known_data = Document.objects.filter(sentiment__isnull=False)
-
     known_data_count = known_data.count()
+    if known_data_count == 0:
+        return None
 
     # 2/3 training data
     num_training_data = int(round(2 * known_data_count / 3))
     training_feats = []
-    for document in known_data[:num_training_data]:
+    for document in known_data.order_by('id')[:num_training_data]:
         text = get_nltktext(document.text)
         training_feats.append((word_feats(text), document.sentiment))
-
-    if known_data_count == 0:
-        return None
 
     classifier = NaiveBayesClassifier.train(training_feats)
 
     # 1/3 test_data
     num_testing_data = int(round(known_data_count / 3))
     testing_feats = []
-    for document in known_data[num_training_data:num_testing_data]:
+    for document in known_data.order_by('-id')[:num_testing_data]:
         text = get_nltktext(document.text)
-        training_feats.append((word_feats(text), document.sentiment))
+        testing_feats.append((word_feats(text), document.sentiment))
 
     print('train on %d instances, test on %d instances' % (len(training_feats), len(testing_feats)))
     print('accuracy:', nltk.classify.util.accuracy(classifier, testing_feats))
