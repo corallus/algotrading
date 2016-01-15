@@ -43,7 +43,6 @@ def fetch():
         for key, value in param_dict.items():
             params += '&%s=%s' % (key, value)
         url = base_url + params
-        print(url)  # TODO remove
         search = oauth_req(url, access_token, access_token_secret)
         str_search = search.decode('utf-8')
         tweets = json.loads(str_search)  # TODO also get the more then 100 latest tweets.
@@ -91,9 +90,10 @@ def fetch():
                         original_document = Document.objects.get(tweet=original_tweet)
                         document.similar = original_document
                         document.save()
-                        print('tweet id ' + str(database_tweet.tweet_id) + ' original set')
+                        # print('tweet id ' + str(database_tweet.tweet_id) + ' original set')
                     except Tweet.DoesNotExist:
-                        print('tweet ' + str(original_tweet_id) + ' does not exist')  # TODO create this tweet
+                        pass
+                        # print('tweet ' + str(original_tweet_id) + ' does not exist')  # TODO create this tweet
     return True
 
 

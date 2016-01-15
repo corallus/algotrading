@@ -4,6 +4,7 @@ from datetime import timedelta
 from document.models import Document
 from stock_retrieval.models import ShareValue
 
+
 # from nltk.sentiment import SentimentAnalyzer http://www.nltk.org/howto/sentiment.html
 
 
@@ -21,10 +22,9 @@ def get_impact(document, minutes_after_article):
         document.active = False
         return None
 
-
     # get share value x time after article
-    sharevalue_after = ShareValue.objects.filter(share=document.share,
-                                            time__gt=document.published + timedelta(minutes=minutes_after_article)).first()
+    sharevalue_after = ShareValue.objects.filter(share=document.share, time__gt=document.published + timedelta(
+        minutes=minutes_after_article)).first()
 
     if sharevalue_after:
         price_after = sharevalue_after.price
@@ -48,7 +48,6 @@ def get_nltktext(text):
 
 
 def train(minutes_after_article):
-
     # get impact for documents for which it has not been computed yet
     for document in Document.objects.filter(sentiment__isnull=True):
         get_impact(document, minutes_after_article)
@@ -64,7 +63,7 @@ def train(minutes_after_article):
         text = get_nltktext(document.text)
         training_feats.append((word_feats(text), document.sentiment))
 
-    if known_data_count ==  0:
+    if known_data_count == 0:
         return None
 
     classifier = NaiveBayesClassifier.train(training_feats)
