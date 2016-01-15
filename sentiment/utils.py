@@ -23,6 +23,7 @@ def get_impact(document, minutes_after_article):
         price_before = sharevalue_before.price
     else:
         document.active = False
+        document.save()
         return None
 
     # get share value x time after article
