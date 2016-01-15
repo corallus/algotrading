@@ -1,8 +1,10 @@
 import feedparser
-from stock_retrieval.models import Share
-from document.models import Document
 from dateutil import parser
 from bs4 import BeautifulSoup
+from django.conf import settings
+
+from stock_retrieval.models import Share
+from document.models import Document
 
 
 def fetch():
@@ -10,6 +12,7 @@ def fetch():
         'https://news.google.com/news?q=%s&output=rss',
         'https://www.google.co.uk/finance/company_news?q=%s&output=rss'
     ]
+    results = False
     for share in Share.objects.all():
         for feed in feeds:
             feed = feedparser.parse(feed % share.share)
@@ -23,5 +26,6 @@ def fetch():
                     title = soup.get_text()
                     document = Document(share=share, text=text, title=title, source=item.link,
                                         published=parser.parse(item.published), guid=item.guid, type='na')
-                    document.save()
+                    for database in settings.DATABASES:
+                        document.save(using=database)
     return results

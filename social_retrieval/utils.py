@@ -72,6 +72,8 @@ def fetch():
                 document = Document.objects.create(share=share, text=tweet_dict.pop('text'),
                                                    source=tweet['user']['id'], type='tw',
                                                    published=tweet_dict['created_at'])
+                for database in settings.DATABASES:
+                    document.save(using=database)
                 database_tweet = Tweet.objects.create(document=document, **tweet_dict)
                 if tweet['entities']['urls']:  # these are the urls
                     urls = []
@@ -91,7 +93,8 @@ def fetch():
                         database_tweet.save()
                         original_document = Document.objects.get(tweet=original_tweet)
                         document.similar = original_document
-                        document.save()
+                        for database in settings.DATABASES:
+                            document.save(using=database)
                         # print('tweet id ' + str(database_tweet.tweet_id) + ' original set')
                     except Tweet.DoesNotExist:
                         pass

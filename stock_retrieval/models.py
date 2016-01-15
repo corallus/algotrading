@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 STOCKS = [('YHOO', 'Yahoo'), ('IBM', 'IBM'), ('TSLA', 'Tesla'), ('ASML.AS', 'ASML')]
 
@@ -9,6 +10,15 @@ class Share(models.Model):
 
     def __str__(self):
         return self.get_share_display()
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+
+        if not using:
+            for database in settings.DATABASES:
+                self.save(using=database)
+        else:
+            return super(Share, self).save(force_insert, force_update, using, update_fields)
 
 
 class ShareValue(models.Model):

@@ -15,3 +15,4 @@ DATABASES = {
 }
 
 TIME = 15
+FILE = '/home/vincent/PycharmProjects/algotrading/export_15.xls'
