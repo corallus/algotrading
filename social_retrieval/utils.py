@@ -1,3 +1,4 @@
+from __builtin__ import unicode
 from dateutil import parser
 from django.conf import settings
 from django.db import transaction
@@ -60,25 +61,26 @@ def fetch():
                               'user_favourites_count': tweet['user']['favourites_count'],
                               'user_friends_count': tweet['user']['friends_count'],
                               'user_listed_count': tweet['user']['listed_count'],
-                              'user_name': tweet['user']['name'].encode('utf-8', 'ignore'),
                               'user_screen_name': tweet['user']['screen_name'],
                               'user_statuses_count': tweet['user']['statuses_count']
                               }
                 try:
-                    Tweet.objects.get(tweet_id=tweet_dict['tweet_id'])
-                    break
-                except Tweet.DoesNotExist:  # the tweet does not exist, so should be added
-                    document = Document.objects.create(share=share, text=tweet_dict.pop('text'),
-                                                       source=tweet['user']['id'], type='tw',
-                                                       published=tweet_dict['created_at'])
-                    database_tweet = Tweet.objects.create(document=document, **tweet_dict)
-                    if tweet['entities']['urls']:  # these are the urls
-                        urls = []
-                        for url in tweet['entities']['urls']:
-                            link = Link.objects.get_or_create(url=url['expanded_url'])[0]
-                            link.save()
-                            urls.append(link)
-                        document.links.add(*urls)
+                    Tweet.objects.get(tweet_id=tweet['id'])
+                    continue  # this tweet is already in the database
+                except Tweet.DoesNotExist:
+                    pass
+
+                document = Document.objects.create(share=share, text=tweet_dict.pop('text'),
+                                                   source=tweet['user']['id'], type='tw',
+                                                   published=tweet_dict['created_at'])
+                database_tweet = Tweet.objects.create(document=document, **tweet_dict)
+                if tweet['entities']['urls']:  # these are the urls
+                    urls = []
+                    for url in tweet['entities']['urls']:
+                        link = Link.objects.get_or_create(url=url['expanded_url'])[0]
+                        link.save()
+                        urls.append(link)
+                    document.links.add(*urls)
         with transaction.atomic():
             for tweet in tweets['statuses']:
                 if 'retweeted_status' in tweet:  # this is a retweet
