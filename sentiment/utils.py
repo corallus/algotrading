@@ -52,7 +52,7 @@ def train(minutes_after_article):
     for document in Document.objects.filter(sentiment__isnull=True):
         get_impact(document, minutes_after_article)
 
-    known_data = Document.objects.filter(sentiment__isnull=True)
+    known_data = Document.objects.filter(sentiment__isnull=False)
 
     known_data_count = known_data.count()
 
@@ -85,5 +85,5 @@ def classify(classifier):
     for document in Document.objects.filter(predicted_sentiment__isnull=True):
         text = get_nltktext(document.text)
         result = classifier.classify(word_feats(text))
-        document.document.predicted_sentiment = result
+        document.predicted_sentiment = result
         document.save()
