@@ -75,6 +75,7 @@ def fetch():
                 for database in settings.DATABASES:
                     document.save(using=database)
                 database_tweet = Tweet.objects.create(document=document, **tweet_dict)
+                '''
                 if tweet['entities']['urls']:  # these are the urls
                     urls = []
                     for url in tweet['entities']['urls']:
@@ -82,7 +83,7 @@ def fetch():
                         for database in settings.DATABASES:
                             link.save(using=database)
                         urls.append(link)
-                    document.links.add(*urls)
+                    document.links.add(*urls)'''
         with transaction.atomic():
             for tweet in tweets['statuses']:
                 if 'retweeted_status' in tweet:  # this is a retweet
