@@ -6,9 +6,18 @@ from datetime import datetime, timedelta
 
 def fetch():
     for share in Share.objects.all():
-        sh = YahooShare(share.share)
-        ShareValue(share=share, price=sh.get_price(), open=sh.get_open(), volume=sh.get_volume(),
-                   time=datetime.strptime(sh.get_trade_datetime(), '%Y-%m-%d %H:%M:%S %Z%z')).save()
+        try:
+            sh = YahooShare(share.share)
+        except:
+            print('exception occurred while fetching stock...')
+            continue
+
+        sv, created = ShareValue.objects.get_or_create(share=share, price=sh.get_price(), open=sh.get_open(),
+                                                       volume=sh.get_volume(),
+                                                       time=datetime.strptime(sh.get_trade_datetime(),
+                                                                              '%Y-%m-%d %H:%M:%S %Z%z'))
+        if not created:
+            print('%s market is closed' % sv.share)
 
 
 def fetch_historical():

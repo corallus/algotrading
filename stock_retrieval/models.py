@@ -15,7 +15,7 @@ class ShareValue(models.Model):
     share = models.ForeignKey(Share, verbose_name=_('share'))
     volume = models.PositiveIntegerField(_('volume'))
     time = models.DateTimeField(_('date'))
-    open = models.DecimalField(_('open'), max_digits=12, decimal_places=2)
+    open = models.DecimalField(_('open'), max_digits=12, decimal_places=2, null=True)
     price = models.DecimalField(_('price'), max_digits=12, decimal_places=2)
 
     def __str__(self):

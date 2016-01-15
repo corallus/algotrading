@@ -33,14 +33,14 @@
             <th>{% trans 'open' %}</th>
         </tr>
         </thead>
-        {% for stockday in object_list %}
+        {% for sharevalue in object_list %}
             <tbody>
             <tr>
-                <td>{{ stockday.time }}</td>
-                <td><b>{{ stockday.share }}</b></td>
-                <td>{{ stockday.price }}</td>
-                <td>{{ stockday.volume }}</td>
-                <td>{{ stockday.open }}</td>
+                <td>{{ sharevalue.time }}</td>
+                <td><b>{{ sharevalue.share }}</b></td>
+                <td>{{ sharevalue.price }}</td>
+                <td>{{ sharevalue.volume }}</td>
+                <td>{{ sharevalue.open }}</td>
             </tr>
             </tbody>
         {% endfor %}

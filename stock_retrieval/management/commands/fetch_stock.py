@@ -6,8 +6,5 @@ import time
 class Command(BaseCommand):
     def handle(self, *args, **options):
         while True:
-            try:
-                fetch_stock()
-            except:
-                pass
-            time.sleep(10)
+            fetch_stock()
+            time.sleep(60)
