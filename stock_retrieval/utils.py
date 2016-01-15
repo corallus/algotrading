@@ -2,7 +2,7 @@ from stock_retrieval.models import Share, ShareDay, ShareValue
 from time import gmtime, strftime
 from yahoo_finance import Share as YahooShare
 from datetime import datetime, timedelta
-
+from django.conf import settings
 
 def fetch():
     for share in Share.objects.all():
@@ -18,6 +18,11 @@ def fetch():
                                                                               '%Y-%m-%d %H:%M:%S %Z%z'))
         if not created:
             print('%s market is closed' % sv.share)
+        """
+        else:
+            for database in settings.DATABASES:
+                sv.save(using=database)
+        """
 
 
 def fetch_historical():

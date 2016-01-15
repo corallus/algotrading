@@ -1,13 +1,11 @@
-from nltk.classify import NaiveBayesClassifier
-import nltk
 from datetime import timedelta
-from document.models import Document
-from stock_retrieval.models import ShareValue
-
 from nltk.classify import NaiveBayesClassifier
-from nltk.corpus import subjectivity
-from nltk.sentiment import SentimentAnalyzer
 from nltk.sentiment.util import *
+from django.conf import settings
+
+from stock_retrieval.models import ShareValue, Share
+from document.models import Document
+from .models import Prediction
 
 
 # from nltk.sentiment import SentimentAnalyzer http://www.nltk.org/howto/sentiment.html
@@ -52,10 +50,10 @@ def get_nltktext(text):
     return nltk.Text(tokens)
 
 
-def train(minutes_after_article):
+def train():
     # get impact for documents for which it has not been computed yet
     for document in Document.objects.filter(sentiment__isnull=True):
-        get_impact(document, minutes_after_article)
+        get_impact(document, settings.TIME)
 
     known_data = Document.objects.filter(sentiment__isnull=False)
     known_data_count = known_data.count()
@@ -80,7 +78,6 @@ def train(minutes_after_article):
 
     print('train on %d instances, test on %d instances' % (len(training_feats), len(testing_feats)))
     accuracy = nltk.classify.util.accuracy(classifier, testing_feats)
-    print('accuracy:', accuracy)
 
     return classifier, accuracy
 
@@ -91,3 +88,24 @@ def classify(classifier):
         result = classifier.classify(word_feats(text))
         document.predicted_sentiment = result
         document.save()
+
+
+def predict():
+    for share in Share.objects.all():
+        prediction = 0
+        for doc in Document.objects.filter(share=share, sentiment__isnull=True,
+                                           predicted_sentiment__isnull=False):
+            if doc.predicted_sentiment == 'pos':
+                prediction += 1 * doc.credibility
+            elif doc.predicted_sentiment == 'neg':
+                prediction += -1 * doc.credibility
+        msg = 'the prediction is: %s' % prediction
+        Prediction(share=share, prediction=prediction).save()
+        if prediction > 0:
+            msg += ', so %s will gain value!' % share
+        elif prediction < 0:
+            msg += ', so %s will lose value!' % share
+        elif prediction == 0:
+            msg += ', so %s is stable!' % share
+
+        print(msg)
