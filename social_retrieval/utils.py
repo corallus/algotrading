@@ -46,7 +46,7 @@ def fetch():
         search = oauth_req(url, access_token, access_token_secret)
         str_search = search.decode('utf-8')
         tweets = json.loads(str_search)  # TODO also get the more then 100 latest tweets.
-        if not tweets['statuses']:
+        if not 'statuses' in tweets:
             return False  # No new statuses
         with transaction.atomic():
             for tweet in tweets['statuses']:
