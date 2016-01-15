@@ -79,7 +79,8 @@ def fetch():
                     urls = []
                     for url in tweet['entities']['urls']:
                         link = Link.objects.get_or_create(url=url['expanded_url'])[0]
-                        link.save()
+                        for database in settings.DATABASES:
+                            link.save(using=database)
                         urls.append(link)
                     document.links.add(*urls)
         with transaction.atomic():
