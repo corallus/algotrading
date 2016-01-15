@@ -10,6 +10,11 @@ class Link(models.Model):
         return self.url
 
 
+class DocumentManager(models.Manager):
+    def get_queryset(self):
+        return super(DocumentManager, self).get_queryset().filter(active=True)
+
+
 class Document(models.Model):
     share = models.ForeignKey(Share)
     source = models.TextField(max_length=400)
@@ -23,6 +28,7 @@ class Document(models.Model):
     credibility = models.IntegerField(default=1)
     guid = models.CharField('guid', max_length=200)
     type = models.CharField(max_length=10, choices=[('na', 'news article'), ('tw', 'tweet')])
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         if self.title:

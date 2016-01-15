@@ -13,15 +13,27 @@ def word_feats(words):
 
 def get_impact(document, minutes_after_article):
     # get share value before article
-    value_before = ShareValue.objects.filter(share=document.share, time__lt=document.published).last().price
+    sharevalue_before = ShareValue.objects.filter(share=document.share, time__lt=document.published).last()
+
+    if sharevalue_before:
+        price_before = sharevalue_before.price
+    else:
+        document.active = False
+        return None
+
 
     # get share value x time after article
-    price_after = ShareValue.objects.filter(share=document.share,
-                                            time__gt=document.published + timedelta(minutes=minutes_after_article)).first().price
+    sharevalue_after = ShareValue.objects.filter(share=document.share,
+                                            time__gt=document.published + timedelta(minutes=minutes_after_article)).first()
 
-    if price_after > value_before:
+    if sharevalue_after:
+        price_after = sharevalue_after.price
+    else:
+        return None
+
+    if price_after > price_before:
         impact = 'pos'
-    elif value_before > price_after:
+    elif price_before > price_after:
         impact = 'neg'
     else:
         impact = 'neu'
@@ -36,14 +48,12 @@ def get_nltktext(text):
 
 
 def train(minutes_after_article):
-    # only articles for which the impact can be calculated are relevant
-    known_data = Document.objects.filter(published__gt=ShareValue.objects.first().time,
-                                         published__lt=ShareValue.objects.last().time + timedelta(
-                                             minutes=minutes_after_article))
 
     # get impact for documents for which it has not been computed yet
-    for document in known_data.filter(sentiment__isnull=True):
+    for document in Document.objects.filter(sentiment__isnull=True):
         get_impact(document, minutes_after_article)
+
+    known_data = Document.objects.filter(sentiment__isnull=True)
 
     known_data_count = known_data.count()
 
