@@ -4,6 +4,11 @@ from datetime import timedelta
 from document.models import Document
 from stock_retrieval.models import ShareValue
 
+from nltk.classify import NaiveBayesClassifier
+from nltk.corpus import subjectivity
+from nltk.sentiment import SentimentAnalyzer
+from nltk.sentiment.util import *
+
 
 # from nltk.sentiment import SentimentAnalyzer http://www.nltk.org/howto/sentiment.html
 
@@ -74,9 +79,10 @@ def train(minutes_after_article):
         testing_feats.append((word_feats(text), document.sentiment))
 
     print('train on %d instances, test on %d instances' % (len(training_feats), len(testing_feats)))
-    print('accuracy:', nltk.classify.util.accuracy(classifier, testing_feats))
+    accuracy = nltk.classify.util.accuracy(classifier, testing_feats)
+    print('accuracy:', accuracy)
 
-    return classifier
+    return classifier, accuracy
 
 
 def classify(classifier):

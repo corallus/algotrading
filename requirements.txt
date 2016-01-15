@@ -9,3 +9,4 @@ oauth2
 django-crispy-forms
 python-dateutil
 yahoo-finance
+openpyxl
