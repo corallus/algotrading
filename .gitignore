@@ -64,3 +64,4 @@ target/
 .idea
 
 algotrading/local_settings.py
+algotrading/settings_*.py
