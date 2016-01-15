@@ -60,7 +60,8 @@ def fetch():
                               'user_followers_count': tweet['user']['followers_count'],
                               'user_favourites_count': tweet['user']['favourites_count'],
                               'user_friends_count': tweet['user']['friends_count'],
-                              'user_listed_count': tweet['user']['listed_count'], 'user_name': tweet['user']['name'],
+                              'user_listed_count': tweet['user']['listed_count'],
+                              'user_name': tweet['user']['name'].encode('utf-8', 'ignore'),
                               'user_screen_name': tweet['user']['screen_name'],
                               'user_statuses_count': tweet['user']['statuses_count']
                               }
