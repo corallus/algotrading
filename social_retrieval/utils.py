@@ -1,4 +1,3 @@
-from __builtin__ import unicode
 from dateutil import parser
 from django.conf import settings
 from django.db import transaction
