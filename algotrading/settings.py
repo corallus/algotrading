@@ -46,7 +46,6 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'crispy_forms',
     'document',
-    'algotrading'
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
