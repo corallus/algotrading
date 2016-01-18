@@ -90,13 +90,17 @@ def fetch():
                     original_tweet_id = tweet['retweeted_status']['id']
                     try:
                         # set this as a retweet
+                        retweet = Tweet.objects.get(tweet_id=tweet['id'])
                         original_tweet = Tweet.objects.get(tweet_id=original_tweet_id)
-                        database_tweet.original = original_tweet
-                        database_tweet.save()
+                        retweet.original = original_tweet
+                        retweet.save()
+                        document = Document.objects.get(tweet=retweet)
                         original_document = Document.objects.get(tweet=original_tweet)
-                        document.similar = original_document
                         for database in settings.DATABASES:
-                            document.save(using=database)
+                            document_in_database = Document.objects.using(database).get(id=document.id)
+                            original_in_database = Document.objects.using(database).get(id=original_document.id)
+                            document_in_database.similar = original_in_database
+                            document_in_database.save(using=database)
                         # print('tweet id ' + str(database_tweet.tweet_id) + ' original set')
                     except Tweet.DoesNotExist:
                         pass
