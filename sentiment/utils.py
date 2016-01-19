@@ -24,7 +24,7 @@ def get_impact(document, minutes_after_article):
     else:
         document.active = False
         document.save()
-        return None
+        return
 
     # get share value x time after article
     sharevalue_after = ShareValue.objects.filter(share=document.share, time__gt=document.published + timedelta(
@@ -33,7 +33,7 @@ def get_impact(document, minutes_after_article):
     if sharevalue_after:
         price_after = sharevalue_after.price
     else:
-        return None
+        return
 
     if price_after > price_before:
         impact = 'pos'
@@ -59,6 +59,7 @@ def train():
     known_data = Document.objects.filter(sentiment__isnull=False)
     known_data_count = known_data.count()
     if known_data_count == 0:
+        print('known_data_count == 0')
         return None, 0
 
     # 2/3 training data
@@ -79,7 +80,6 @@ def train():
 
     print('train on %d instances, test on %d instances' % (len(training_feats), len(testing_feats)))
     accuracy = nltk.classify.util.accuracy(classifier, testing_feats)
-
     return classifier, accuracy
 
 

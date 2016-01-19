@@ -23,8 +23,6 @@ class Command(BaseCommand):
                 classify(classifier)  # classify unknown documents
                 calculate_credibility()
                 predict()
-            else:
-                accuracies.append('')
-            ws.append(accuracies)
-            wb.save(settings.FILE)
+                ws.append(accuracies)
+                wb.save(settings.FILE)
             time.sleep(50)

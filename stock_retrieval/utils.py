@@ -19,9 +19,6 @@ def fetch():
                                                                               '%Y-%m-%d %H:%M:%S %Z%z'))
         if not created:
             print('%s market is closed' % sv.share)
-        else:
-            for database in settings.DATABASES:
-                sv.save(using=database)
 
 
 def fetch_historical():

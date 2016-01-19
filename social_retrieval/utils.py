@@ -72,16 +72,12 @@ def fetch():
                 document = Document.objects.create(share=share, text=tweet_dict.pop('text'),
                                                    source=tweet['user']['id'], type='tw',
                                                    published=tweet_dict['created_at'])
-                for database in settings.DATABASES:
-                    document.save(using=database)
                 database_tweet = Tweet.objects.create(document=document, **tweet_dict)
                 '''
                 if tweet['entities']['urls']:  # these are the urls
                     urls = []
                     for url in tweet['entities']['urls']:
                         link = Link.objects.get_or_create(url=url['expanded_url'])[0]
-                        for database in settings.DATABASES:
-                            link.save(using=database)
                         urls.append(link)
                     document.links.add(*urls)'''
         with transaction.atomic():
@@ -96,11 +92,10 @@ def fetch():
                         retweet.save()
                         document = Document.objects.get(tweet=retweet)
                         original_document = Document.objects.get(tweet=original_tweet)
-                        for database in settings.DATABASES:
-                            document_in_database = Document.objects.using(database).get(id=document.id)
-                            original_in_database = Document.objects.using(database).get(id=original_document.id)
-                            document_in_database.similar = original_in_database
-                            document_in_database.save(using=database)
+                        document_in_database = Document.objects.get(id=document.id)
+                        original_in_database = Document.objects.get(id=original_document.id)
+                        document_in_database.similar = original_in_database
+                        document_in_database.save()
                         # print('tweet id ' + str(database_tweet.tweet_id) + ' original set')
                     except Tweet.DoesNotExist:
                         pass

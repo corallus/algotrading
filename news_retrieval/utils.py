@@ -24,8 +24,6 @@ def fetch():
                     text = soup.get_text()
                     soup = BeautifulSoup(item.title, 'html.parser')
                     title = soup.get_text()
-                    document = Document(share=share, text=text, title=title, source=item.link,
-                                        published=parser.parse(item.published), guid=item.guid, type='na')
-                    for database in settings.DATABASES:
-                        document.save(using=database)
+                    Document(share=share, text=text, title=title, source=item.link,
+                                        published=parser.parse(item.published), guid=item.guid, type='na').save()
     return results
