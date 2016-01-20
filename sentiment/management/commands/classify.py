@@ -10,19 +10,22 @@ from sentiment.utils import train, classify, predict
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        wb = Workbook()
-        ws = wb.active  # grab the active worksheet
         while True:
             accuracies = [datetime.datetime.now()]
             classifier, accuracy = train()
             # check whether there is training data to create a classifier
             if classifier:
-                print('accuracy: %s' % accuracy)
-                accuracies.append(accuracy)
                 classifier.show_most_informative_features()
                 classify(classifier)  # classify unknown documents
                 calculate_credibility()
-                predict()
-                ws.append(accuracies)
-                wb.save(settings.FILE)
+                prediction = predict()
+
+                for share in prediction:
+                    if prediction[share] > 0:
+                        print('%s will go up (score: %s)' % (share, prediction[share]))
+                    elif prediction[share] < 0:
+                        print('%s will drop (score: %s)' % (share, prediction[share]))
+                    else:
+                        print('%s will remain the same (score: %s)' % (share, prediction[share]))
+                print("\a")
             time.sleep(50)

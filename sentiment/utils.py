@@ -92,6 +92,7 @@ def classify(classifier):
 
 
 def predict():
+    predictions = {}
     for share in Share.objects.all():
         prediction = 0
         for doc in Document.objects.filter(share=share, sentiment__isnull=True,
@@ -100,13 +101,9 @@ def predict():
                 prediction += 1 * doc.credibility
             elif doc.predicted_sentiment == 'neg':
                 prediction += -1 * doc.credibility
-        msg = 'the prediction is: %s' % prediction
-        Prediction(share=share, prediction=prediction).save()
-        if prediction > 0:
-            msg += ', so %s will gain value!' % share
-        elif prediction < 0:
-            msg += ', so %s will lose value!' % share
-        elif prediction == 0:
-            msg += ', so %s is stable!' % share
 
-        print(msg)
+        predictions[share.share] = prediction
+    return predictions
+
+
+
