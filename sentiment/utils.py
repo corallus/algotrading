@@ -1,6 +1,6 @@
 from datetime import timedelta
 from nltk.classify import NaiveBayesClassifier
-from nltk.sentiment.util import *
+import nltk
 from django.conf import settings
 
 from stock_retrieval.models import ShareValue, Share

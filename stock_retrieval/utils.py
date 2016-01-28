@@ -2,7 +2,6 @@ from stock_retrieval.models import Share, ShareDay, ShareValue
 from time import gmtime, strftime
 from yahoo_finance import Share as YahooShare
 from datetime import datetime, timedelta
-from django.conf import settings
 
 
 def fetch():
