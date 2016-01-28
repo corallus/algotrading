@@ -9,14 +9,13 @@ from document.models import Document
 
 def fetch():
     feeds = [
-        'https://news.google.com/news?q=%s&output=rss',
-        'https://www.google.co.uk/finance/company_news?q=%s&output=rss'
+        'https://news.google.com/news?q=%s&output=rss&hl=en',
+        'https://www.google.co.uk/finance/company_news?q=%s&output=rss&hl=en'
     ]
     results = False
     for share in Share.objects.all():
         for feed in feeds:
             feed = feedparser.parse(feed % share.share)
-            results = False
             for item in feed.entries:
                 if not Document.objects.filter(guid=item.guid).exists():
                     results = True
