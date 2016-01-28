@@ -5,10 +5,6 @@ from django.conf import settings
 
 from stock_retrieval.models import ShareValue, Share
 from document.models import Document
-from .models import Prediction
-
-
-# from nltk.sentiment import SentimentAnalyzer http://www.nltk.org/howto/sentiment.html
 
 
 def word_feats(words):
