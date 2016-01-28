@@ -15,7 +15,7 @@ class Command(BaseCommand):
         ws = wb.active
         ws.title = 'first sheet'
 
-        for time in range(1, 350, 5):
+        for time in range(1, 346, 5):
             # reset data
             Document.objects.update(sentiment=None, predicted_sentiment=None)
 
