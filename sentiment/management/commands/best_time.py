@@ -4,7 +4,6 @@ from django.conf import settings
 from datetime import timedelta, datetime
 from nltk.classify import NaiveBayesClassifier
 from nltk.sentiment.util import *
-from credibility.models import calculate_credibility
 from sentiment.utils import predict, get_nltktext, word_feats
 from document.models import Document
 from stock_retrieval.models import ShareValue
@@ -15,7 +14,6 @@ class Command(BaseCommand):
         wb = Workbook()
         ws = wb.active
         ws.title = 'first sheet'
-        times = [5, 10,  20, 40, 80, 160, 320]
 
         for time in range(1, 350, 5):
             # reset data
